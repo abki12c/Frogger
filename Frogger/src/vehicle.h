@@ -23,5 +23,4 @@ public:
 	~Vehicle();
 protected:
 	void debugDraw();
-
 };
