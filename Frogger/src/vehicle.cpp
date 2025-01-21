@@ -8,9 +8,7 @@ void Vehicle::update(float dt)
 {
 	m_pos_x += m_speed * graphics::getDeltaTime();
 
-	if (m_speed > 0 && m_pos_x > CANVAS_WIDTH + m_width) {
-		m_active = false;
-	} else if (m_speed < 0 && m_pos_x < -m_width) {
+	if (m_speed > 0 && m_pos_x > CANVAS_WIDTH + m_width || m_speed < 0 && m_pos_x < -m_width) {
 		m_active = false;
 	}
 }
@@ -18,6 +16,8 @@ void Vehicle::update(float dt)
 void Vehicle::init()
 {
 	m_brush.outline_opacity = 0.0f;
+	m_brush.texture = std::string(ASSET_PATH) + m_sprite;
+
 	if (m_speed > 0) {
 		m_pos_x -= m_width;
 	} else {
@@ -28,7 +28,7 @@ void Vehicle::init()
 
 void Vehicle::draw()
 {
-	m_brush.texture = std::string(ASSET_PATH) + m_sprite;
+	
 	graphics::drawRect(m_pos_x, m_pos_y, m_width, m_height, m_brush);
 
 	if (m_state->getDebugMode()) {

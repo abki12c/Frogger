@@ -28,12 +28,7 @@ void Log::init()
 
 void Log::draw()
 {
-    if (m_speed > 0) {
-        graphics::drawRect(m_pos_x, m_pos_y, m_width, m_height, m_brush);
-    }
-    else {
-        graphics::drawRect(m_pos_x, m_pos_y, m_width, m_height, m_brush);
-    }
+    graphics::drawRect(m_pos_x, m_pos_y, m_width, m_height, m_brush);
 
     if (m_state->getDebugMode()) {
         debugDraw();
