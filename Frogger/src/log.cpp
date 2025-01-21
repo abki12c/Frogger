@@ -8,10 +8,7 @@ void Log::update(float dt)
 {
     m_pos_x += m_speed * graphics::getDeltaTime();
 
-    if (m_speed > 0 && m_pos_x > CANVAS_WIDTH + m_width) {
-        m_active = false;
-    }
-    else if (m_speed < 0 && m_pos_x < -m_width) {
+    if (m_speed > 0 && m_pos_x > CANVAS_WIDTH + m_width || m_speed < 0 && m_pos_x < -m_width) {
         m_active = false;
     }
 }
