@@ -42,7 +42,7 @@ void Level::spawnMovingObjects()
 
 void Level::removeInactiveObjects()
 {
-	// Remove inactive vehicles
+	// Remove inactive game objects
 	m_dynamic_objects.erase(
 		std::remove_if(m_dynamic_objects.begin(), m_dynamic_objects.end(), [](GameObject* game_object) {
 			if (game_object && !game_object->isActive()) {
