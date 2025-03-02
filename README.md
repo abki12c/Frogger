@@ -7,3 +7,15 @@ This is a recreation of the frogger arcade videogame made in C++ using the [SGG 
 
 ## How to play
 Use the WASD button to move. You can also play in fullscreen mode by pressing the F button while in the main menu 
+
+
+## Build using CMake
+
+To build the project using CMake use the following commands:
+
+```bash
+mkdir build
+cd builld
+cmake ..
+cmake --build .
+```

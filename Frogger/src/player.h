@@ -13,7 +13,7 @@ private:
 	const float m_step = 79.0f;
 	int m_current_lives;
 	bool m_key_pressed[4] = { false, false, false, false }; // W, S, A, D keys
-	typedef enum Direction { UP, DOWN, LEFT, RIGHT };
+	enum Direction { UP, DOWN, LEFT, RIGHT };
 	std::string m_current_sprite = "FroggerIdleU.png";
 	float m_animation_timer = 0.0f; // Timer to control animation
 	const float m_leap_duration = 0.25f; // How long the leap sprite should be displayed (in seconds)
