@@ -15,7 +15,7 @@ To build the project using CMake use the following commands:
 
 ```bash
 mkdir build
-cd builld
+cd build
 cmake ..
 cmake --build .
 ```
