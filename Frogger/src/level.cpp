@@ -1,12 +1,12 @@
 #include <sgg/graphics.h>
-#include "level.h"
-#include "gamestate.h"
-#include "util.h"
-#include "config.h"
-#include "vehicle.h"
+#include "level.hpp"
+#include "gamestate.hpp"
+#include "util.hpp"
+#include "config.hpp"
+#include "vehicle.hpp"
 #include <fstream>
 #include <iostream>
-#include "log.h"
+#include "log.hpp"
 
 void Level::spawnMovingObjects()
 {

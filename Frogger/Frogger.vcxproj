@@ -152,14 +152,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\box.h" />
-    <ClInclude Include="src\config.h" />
-    <ClInclude Include="src\gamestate.h" />
-    <ClInclude Include="src\gameobject.h" />
-    <ClInclude Include="src\level.h" />
-    <ClInclude Include="src\log.h" />
-    <ClInclude Include="src\player.h" />
-    <ClInclude Include="src\util.h" />
-    <ClInclude Include="src\vehicle.h" />
+    <ClInclude Include="src\config.hpp" />
+    <ClInclude Include="src\gamestate.hpp" />
+    <ClInclude Include="src\gameobject.hpp" />
+    <ClInclude Include="src\level.hpp" />
+    <ClInclude Include="src\log.hpp" />
+    <ClInclude Include="src\player.hpp" />
+    <ClInclude Include="src\util.hpp" />
+    <ClInclude Include="src\vehicle.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

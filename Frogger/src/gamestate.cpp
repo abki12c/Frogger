@@ -1,8 +1,8 @@
-#include "gamestate.h"
+#include "gamestate.hpp"
 #include "sgg/graphics.h"
-#include "config.h"
-#include "level.h"
-#include "util.h"
+#include "config.hpp"
+#include "level.hpp"
+#include "util.hpp"
 #include <iostream>
 
 GameState* GameState::m_instance = nullptr;

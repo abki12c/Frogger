@@ -1,6 +1,6 @@
 #pragma once
-#include "gameobject.h"
-#include "config.h"
+#include "gameobject.hpp"
+#include "config.hpp"
 #include "box.h"
 #include "sgg/graphics.h"
 

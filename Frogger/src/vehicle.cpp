@@ -1,8 +1,8 @@
-#include "vehicle.h"
+#include "vehicle.hpp"
 #include "sgg/graphics.h"
-#include "config.h"
-#include "gamestate.h"
-#include "util.h"
+#include "config.hpp"
+#include "gamestate.hpp"
+#include "util.hpp"
 
 void Vehicle::update(float dt)
 {

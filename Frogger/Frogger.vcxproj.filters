@@ -41,28 +41,28 @@
     <ClInclude Include="src\box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\config.h">
+    <ClInclude Include="src\config.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamestate.h">
+    <ClInclude Include="src\gamestate.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gameobject.h">
+    <ClInclude Include="src\gameobject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\log.h">
+    <ClInclude Include="src\log.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\player.h">
+    <ClInclude Include="src\player.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\vehicle.h">
+    <ClInclude Include="src\vehicle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\level.h">
+    <ClInclude Include="src\level.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\util.h">
+    <ClInclude Include="src\util.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,7 @@
-#include "player.h"
+#include "player.hpp"
 #include "sgg/graphics.h"
-#include "util.h"
-#include "gamestate.h"
+#include "util.hpp"
+#include "gamestate.hpp"
 
 void Player::update(float dt)
 {

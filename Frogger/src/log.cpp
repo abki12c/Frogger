@@ -1,8 +1,8 @@
-#include "log.h"
+#include "log.hpp"
 #include "sgg/graphics.h"
-#include "config.h"
-#include "util.h"
-#include "gamestate.h"
+#include "config.hpp"
+#include "util.hpp"
+#include "gamestate.hpp"
 
 void Log::update(float dt)
 {

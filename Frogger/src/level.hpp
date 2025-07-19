@@ -1,12 +1,12 @@
 	#pragma once
 
-	#include "gameobject.h"
+	#include "gameobject.hpp"
 	#include <vector>
 	#include <list>
 	#include <string>
 	#include <array>
 	#include <sgg/graphics.h>
-	#include "player.h"
+	#include "player.hpp"
 
 	class Level : public GameObject
 	{

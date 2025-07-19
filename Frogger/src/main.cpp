@@ -1,6 +1,6 @@
 #include "sgg/graphics.h"
-#include "gamestate.h"
-#include "config.h"
+#include "gamestate.hpp"
+#include "config.hpp"
 
 
 void update(float dt)
