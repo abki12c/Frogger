@@ -1,6 +1,5 @@
 #include "gamestate.hpp"
 #include "sgg/graphics.h"
-#include "config.hpp"
 #include "level.hpp"
 #include "util.hpp"
 #include <iostream>
@@ -135,7 +134,7 @@ void GameState::drawStartScreen()
 	graphics::Brush br;
 	graphics::Brush br2;
 	br2.outline_opacity = 0;
-	br2.texture = std::string(ASSET_PATH) + "wallpaper.png";
+	br2.texture = getFullAssetPath("wallpaper.png");
 	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br2);
 
 	graphics::MouseState ms;
@@ -217,6 +216,11 @@ void GameState::updateScore(unsigned int points)
 	m_score += points;
 }
 
+std::string GameState::getFullAssetPath(const std::string& asset) const
+{
+	return m_asset_path + asset;
+}
+
 void GameState::update(float dt)
 {
 	// Skip an update if a long delay is detected 
@@ -258,7 +262,7 @@ void GameState::init()
 	m_player->init();
 
 	graphics::preloadBitmaps(ASSET_PATH);
-	graphics::setFont(std::string(ASSET_PATH) + "fonts/liberation-sans.regular.ttf");
-	graphics::playMusic(std::string(ASSET_PATH) + "sound/soundtrack.mp3", 1.0f, true, 4000);
+	graphics::setFont(getFullAssetPath("fonts/liberation-sans.regular.ttf"));
+	graphics::playMusic(getFullAssetPath("sound/soundtrack.mp3"), 1.0f, true, 4000);
 
 }

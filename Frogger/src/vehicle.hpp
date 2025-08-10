@@ -15,10 +15,13 @@ public:
 	void update(float dt) override;
 	void init() override;
 	void draw() override;
+
+	// Getters
 	float getPosX() const { return m_pos_x; }
 	float getPosY() const { return m_pos_y; }
 	float getWidth() const { return m_width; }
 	float getHeight() const { return m_height; }
+
 	Vehicle(const std::string name, float x, float y, float speed, const float width, const float height, const std::string& sprite);
 	~Vehicle();
 protected:

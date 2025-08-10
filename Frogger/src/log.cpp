@@ -16,7 +16,7 @@ void Log::update(float dt)
 void Log::init()
 {
     m_brush.outline_opacity = 0.0f;
-    m_brush.texture = std::string(ASSET_PATH) + m_sprite;
+    m_brush.texture = m_state->getFullAssetPath(m_sprite);
 
     if (m_speed > 0) {
         m_pos_x -= m_width;

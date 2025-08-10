@@ -2,92 +2,90 @@
 #include "sgg/graphics.h"
 #include "util.hpp"
 #include "gamestate.hpp"
+#include <algorithm>
 
 void Player::update(float dt)
 {
 	if (m_isOnLog) {
-		m_pos_x += m_onLogSpeed * graphics::getDeltaTime();
+		m_pos_x += m_onLogSpeed * dt;
 	}
 
 	if (graphics::getKeyState(graphics::SCANCODE_W)) {
-		if (!m_key_pressed[0] && m_animation_timer <= 0.0f) {
-			m_key_pressed[0] = true;
+		if (!m_key_pressed[KEY_W] && m_animation_timer <= 0.0f) {
+			m_key_pressed[KEY_W] = true;
 			m_pos_y -= m_step;
-			graphics::playSound(std::string(ASSET_PATH) + "sound/jump.wav", 0.5f, false);
-			m_current_sprite =  "FroggerLeapU.png";
+			graphics::playSound(m_state->getFullAssetPath("sound/jump.wav"), 0.5f, false);
+			m_current_sprite = m_sprites[UP].leap;
 			m_last_direction = UP;
 			m_animation_timer = m_leap_duration; // Reset the timer
 		}
 	} else {
-		m_key_pressed[0] = false;
+		m_key_pressed[KEY_W] = false;
 	}
 	
 	if (graphics::getKeyState(graphics::SCANCODE_S)) {
-		if (!m_key_pressed[2] && m_animation_timer <= 0.0f) {
-			m_key_pressed[2] = true;
+		if (!m_key_pressed[KEY_S] && m_animation_timer <= 0.0f) {
+			m_key_pressed[KEY_S] = true;
 			m_pos_y += m_step;
-			graphics::playSound(std::string(ASSET_PATH) + "sound/jump.wav", 0.5f, false);
-			m_current_sprite = "FroggerLeapD.png";
+			graphics::playSound(m_state->getFullAssetPath("sound/jump.wav"), 0.5f, false);
+			m_current_sprite = m_sprites[DOWN].leap;
 			m_last_direction = DOWN;
 			m_animation_timer = m_leap_duration; // Reset the timer
 		}
 	} else {
-		m_key_pressed[2] = false;
+		m_key_pressed[KEY_S] = false;
 	}
 	
 	if (graphics::getKeyState(graphics::SCANCODE_A)) {
-		if (!m_key_pressed[1] && m_animation_timer <= 0.0f) {
-			m_key_pressed[1] = true;
+		if (!m_key_pressed[KEY_A] && m_animation_timer <= 0.0f) {
+			m_key_pressed[KEY_A] = true;
 			m_pos_x -= m_step;
-			graphics::playSound(std::string(ASSET_PATH) + "sound/jump.wav", 0.5f, false);
-			m_current_sprite = "FroggerLeapL.png";
+			graphics::playSound(m_state->getFullAssetPath("sound/jump.wav"), 0.5f, false);
+			m_current_sprite = m_sprites[LEFT].leap;
 			m_last_direction = LEFT;
 			m_animation_timer = m_leap_duration; // Reset the timer
 		}
 	} else {
-		m_key_pressed[1] = false;
+		m_key_pressed[KEY_A] = false;
 	}
 
 	if (graphics::getKeyState(graphics::SCANCODE_D)) {
-		if (!m_key_pressed[3] && m_animation_timer <= 0.0f) {
-			m_key_pressed[3] = true;
+		if (!m_key_pressed[KEY_D] && m_animation_timer <= 0.0f) {
+			m_key_pressed[KEY_D] = true;
 			m_pos_x += m_step;
-			graphics::playSound(std::string(ASSET_PATH) + "sound/jump.wav", 0.5f, false);
-			m_current_sprite = "FroggerLeapR.png";
+			graphics::playSound(m_state->getFullAssetPath("sound/jump.wav"), 0.5f, false);
+			m_current_sprite = m_sprites[RIGHT].leap;
 			m_last_direction = RIGHT;
 			m_animation_timer = m_leap_duration; // Reset the timer
 		}
 	} else {
-		m_key_pressed[3] = false;
+		m_key_pressed[KEY_D] = false;
 	}
 
 	// Decrease the animation timer
-	if (m_animation_timer > 0.0f) {
-		m_animation_timer -= graphics::getDeltaTime() / 1000.0f;
+	if (m_animation_timer > 0.0f) {  
+		m_animation_timer -= dt / 1000.0f;	
 	}
 
 	// Switch back to idle sprite if the timer has run out
 	if (m_animation_timer <= 0.0f) {
 		switch (m_last_direction) {
-			case UP:    m_current_sprite = "FroggerIdleU.png"; break;
-			case DOWN:  m_current_sprite = "FroggerIdleD.png"; break;
-			case LEFT:  m_current_sprite = "FroggerIdleL.png"; break;
-			case RIGHT: m_current_sprite = "FroggerIdleR.png"; break;
+			case UP:    m_current_sprite = m_sprites[UP].idle; break;
+			case DOWN:  m_current_sprite = m_sprites[DOWN].idle; break;
+			case LEFT:  m_current_sprite = m_sprites[LEFT].idle; break;
+			case RIGHT: m_current_sprite = m_sprites[RIGHT].idle; break;
 		}
 	}
 	
 
-	// check if player is out of bounds
-	if (m_pos_x <= 0) m_pos_x = 56;
-	if (m_pos_x >= CANVAS_WIDTH) m_pos_x = 1004;
-	if (m_pos_y > 820) m_pos_y = 820;
-
-	GameObject::update(dt);
+	// Clamp player position to stay within bounds
+	m_pos_x = std::clamp(m_pos_x, 56.0f, 1004.0f);
+	m_pos_y = std::clamp(m_pos_y, 0.0f, 820.0f);
 }
 
 void Player::draw()
 {
-	m_brush_player.texture = std::string(ASSET_PATH) + m_current_sprite;
+	m_brush_player.texture = m_state->getFullAssetPath(m_current_sprite);
 	graphics::drawRect(m_pos_x,m_pos_y,48.f,48.f,m_brush_player);
 
 	if (m_state->getDebugMode())
@@ -107,7 +105,14 @@ void Player::init()
 	m_width = 38.f;
 	m_height = 30.f;
 
-	m_current_lives = 4;
+	m_current_lives = m_max_lives;
+
+	m_sprites[UP] = { "FroggerIdleU.png", "FroggerLeapU.png" };
+	m_sprites[DOWN] = { "FroggerIdleD.png", "FroggerLeapD.png" };
+	m_sprites[LEFT] = { "FroggerIdleL.png", "FroggerLeapL.png" };
+	m_sprites[RIGHT] = { "FroggerIdleR.png", "FroggerLeapR.png" };
+
+	m_current_sprite = m_sprites[UP].idle;
 }
 
 
@@ -159,14 +164,10 @@ void Player::setIsOnLog(bool isOnLog)
 
 void Player::resetPlayer()
 {
-	m_current_sprite = "FroggerIdleU.png";
-	m_last_direction = UP;
-	m_animation_timer = m_leap_duration;
-}
-
-void Player::resetPlayerPosition()
-{
 	setPosX(getInitialPosX());
 	setPosY(getInitialPosY());
-	resetPlayer();
+
+	m_current_sprite = m_sprites[UP].idle;
+	m_last_direction = UP;
+	m_animation_timer = m_leap_duration;
 }

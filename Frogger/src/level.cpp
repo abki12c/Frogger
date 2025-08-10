@@ -57,7 +57,7 @@ void Level::removeInactiveObjects()
 
 void Level::readFile(const std::string& filename)
 {
-	std::ifstream inFile(std::string(ASSET_PATH) + filename);
+	std::ifstream inFile(m_state->getFullAssetPath(filename));
 
 	if (!inFile.is_open()) {
 		std::cerr << "Error: Unable to open file " << filename << std::endl;
@@ -109,7 +109,7 @@ void Level::drawBlock(int i)
 	float x = box.m_pos_x + 35;
 	float y = box.m_pos_y + 25;
 
-	m_block_brush.texture = std::string(ASSET_PATH) + m_block_names[i];
+	m_block_brush.texture = m_state->getFullAssetPath(m_block_names[i]);
 
 	graphics::drawRect(x, y, m_block_size, m_block_size, m_block_brush);
 
@@ -138,8 +138,8 @@ void Level::checkCollisions()
 
 				// Check for collision
 				if (m_state->getPlayer()->intersect(vehicleBox)) {
-					graphics::playSound(std::string(ASSET_PATH) + "sound/splat.wav", 0.5f, false);
-					m_state->getPlayer()->resetPlayerPosition();
+					graphics::playSound(m_state->getFullAssetPath("sound/splat.wav"), 0.5f, false);
+					m_state->getPlayer()->resetPlayer();
 					m_state->getPlayer()->reduceLives();
 					break;
 				}
@@ -174,7 +174,7 @@ void Level::checkCollisions()
 
 					if (!m_levelCompleteSoundPlayed) {
 						graphics::stopMusic();
-						graphics::playSound(std::string(ASSET_PATH) + "sound/songLevelComplete.mp3", 0.5f, false);
+						graphics::playSound(m_state->getFullAssetPath("sound/songLevelComplete.mp3"), 0.5f, false);
 						m_levelCompleteSoundPlayed = true;
 						m_levelCompleteSoundTimer = 0.0f;
 					}
@@ -183,23 +183,23 @@ void Level::checkCollisions()
 				m_state->getInstance()->updateScore(20);
 
 				
-				m_state->getPlayer()->resetPlayerPosition();
+				m_state->getPlayer()->resetPlayer();
 				m_remaining_time = m_total_time;
 			}
 			else {
-				graphics::playSound(std::string(ASSET_PATH) + "sound/squash.wav", 0.5f, false);
-				m_state->getPlayer()->resetPlayerPosition();
+				graphics::playSound(m_state->getFullAssetPath("sound/squash.wav"), 0.5f, false);
+				m_state->getPlayer()->resetPlayer();
 				m_state->getPlayer()->reduceLives();
 			}
 		}
 		else if (m_block_names[i] == "home.png" && m_state->getPlayer()->intersect(m_blocks[i])) {
-			graphics::playSound(std::string(ASSET_PATH) + "sound/squash.wav", 0.5f, false);
-			m_state->getPlayer()->resetPlayerPosition();
+			graphics::playSound(m_state->getFullAssetPath("sound/squash.wav"), 0.5f, false);
+			m_state->getPlayer()->resetPlayer();
 			m_state->getPlayer()->reduceLives();
 		} 
 		else if (m_block_names[i] == "water.png" && !m_state->getPlayer()->getIsOnLog() && m_state->getPlayer()->intersect(m_blocks[i])) {
-			graphics::playSound(std::string(ASSET_PATH) + "sound/splash.wav", 1.0f, false);
-			m_state->getPlayer()->resetPlayerPosition();
+			graphics::playSound(m_state->getFullAssetPath("sound/splash.wav"), 1.0f, false);
+			m_state->getPlayer()->resetPlayer();
 			m_state->getPlayer()->reduceLives();
 		}
 	}
@@ -245,7 +245,7 @@ void Level::update(float dt)
 	}
 
 	if (m_remaining_time < m_total_time * 0.3f && !m_playedTimeRunsOutSound) {
-		graphics::playSound(std::string(ASSET_PATH) + "sound/runningOutOfTime.wav", 0.5f, false);
+		graphics::playSound(m_state->getFullAssetPath("sound/runningOutOfTime.wav"), 0.5f, false);
 		m_playedTimeRunsOutSound = true;
 	}
 
@@ -253,7 +253,7 @@ void Level::update(float dt)
 	if (m_state->getPlayer()->getLives() == 0) {
 		graphics::stopMusic();
 		m_state->getInstance()->setStatus(GameState::STATUS_GAME_OVER);
-		graphics::playSound(std::string(ASSET_PATH) + "sound/game-over.wav",0.5f,false);
+		graphics::playSound(m_state->getFullAssetPath("sound/game-over.wav"),0.5f,false);
 	}
 
 
@@ -261,7 +261,7 @@ void Level::update(float dt)
 	if (m_levelCompleteSoundPlayed) {
 		m_levelCompleteSoundTimer += dt / 1000.0f;
 		if (m_levelCompleteSoundTimer >= 6.0f) {
-			graphics::playMusic(std::string(ASSET_PATH) + "sound/main-song.mp3", 0.5f, true);
+			graphics::playMusic(m_state->getFullAssetPath("sound/main-song.mp3"), 0.5f, true);
 			m_levelCompleteSoundPlayed = false;
 		}
 	}
@@ -330,10 +330,10 @@ void Level::init()
 	m_brush_text.outline_opacity = 0.0f;
 	SETCOLOR(m_brush_text.fill_color, 255.f, 255.f, 255.f);
 
-	m_brush_frog_safe.texture = std::string(ASSET_PATH) + "safe.png";
+	m_brush_frog_safe.texture = m_state->getFullAssetPath("safe.png");
 	m_brush_frog_safe.outline_opacity = 0.0f;
 
-	m_brush_lives.texture = std::string(ASSET_PATH) + "life.png";
+	m_brush_lives.texture = m_state->getFullAssetPath("life.png");
 	m_brush_lives.outline_opacity = 0.0f;
 
 	m_visited_goals[0] = false;

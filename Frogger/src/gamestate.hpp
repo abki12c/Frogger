@@ -1,4 +1,6 @@
 #pragma once
+#include "config.hpp"
+#include <string>
 
 
 class GameState {
@@ -10,6 +12,7 @@ private:
 	class Level* m_current_level = nullptr;
 	bool m_isInStart, m_isInQuit,m_isInRetry,m_isInExit = false;
 	bool m_debug_mode;
+	const std::string m_asset_path = ASSET_PATH;
 	status_t m_status = STATUS_START;
 	unsigned int m_score = 0;
 
@@ -29,6 +32,7 @@ public:
 	void setStatus(status_t status);
 	unsigned int getScore() { return m_score; };
 	void updateScore(unsigned int points);
+	std::string getFullAssetPath(const std::string& asset) const;
 	void update(float dt);
 	void draw();
 	void init();
