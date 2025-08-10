@@ -381,6 +381,4 @@ Level::~Level()
 {
 	for (auto p_go : m_dynamic_objects)
 		delete p_go;
-
-
 }

@@ -10,71 +10,41 @@ void Player::update(float dt)
 		m_pos_x += m_onLogSpeed * dt;
 	}
 
-	if (graphics::getKeyState(graphics::SCANCODE_W)) {
-		if (!m_key_pressed[KEY_W] && m_animation_timer <= 0.0f) {
-			m_key_pressed[KEY_W] = true;
-			m_pos_y -= m_step;
-			graphics::playSound(m_state->getFullAssetPath("sound/jump.wav"), 0.5f, false);
-			m_current_sprite = m_sprites[UP].leap;
-			m_last_direction = UP;
-			m_animation_timer = m_leap_duration; // Reset the timer
+	Direction pressedDirection;
+	bool keyPressed = false;
+
+	if (graphics::getKeyState(graphics::SCANCODE_W)) { pressedDirection = UP; keyPressed = true; }
+	else if (graphics::getKeyState(graphics::SCANCODE_S)) { pressedDirection = DOWN; keyPressed = true; }
+	else if (graphics::getKeyState(graphics::SCANCODE_A)) { pressedDirection = LEFT; keyPressed = true; }
+	else if (graphics::getKeyState(graphics::SCANCODE_D)) { pressedDirection = RIGHT; keyPressed = true; }
+
+	
+	if (keyPressed && !m_key_pressed[pressedDirection] && m_animation_timer <= 0.0f) {
+		m_key_pressed[pressedDirection] = true;
+
+		// Move player based on direction
+		switch (pressedDirection) {
+			case UP:    m_pos_y -= m_step; break;
+			case DOWN:  m_pos_y += m_step; break;
+			case LEFT:  m_pos_x -= m_step; break;
+			case RIGHT: m_pos_x += m_step; break;
 		}
-	} else {
-		m_key_pressed[KEY_W] = false;
+
+		graphics::playSound(m_state->getFullAssetPath("sound/jump.wav"), 0.5f, false);
+		m_current_sprite = m_sprites[pressedDirection].leap;
+		m_last_direction = pressedDirection;
+		m_animation_timer = m_leap_duration;
 	}
 	
-	if (graphics::getKeyState(graphics::SCANCODE_S)) {
-		if (!m_key_pressed[KEY_S] && m_animation_timer <= 0.0f) {
-			m_key_pressed[KEY_S] = true;
-			m_pos_y += m_step;
-			graphics::playSound(m_state->getFullAssetPath("sound/jump.wav"), 0.5f, false);
-			m_current_sprite = m_sprites[DOWN].leap;
-			m_last_direction = DOWN;
-			m_animation_timer = m_leap_duration; // Reset the timer
-		}
-	} else {
-		m_key_pressed[KEY_S] = false;
-	}
-	
-	if (graphics::getKeyState(graphics::SCANCODE_A)) {
-		if (!m_key_pressed[KEY_A] && m_animation_timer <= 0.0f) {
-			m_key_pressed[KEY_A] = true;
-			m_pos_x -= m_step;
-			graphics::playSound(m_state->getFullAssetPath("sound/jump.wav"), 0.5f, false);
-			m_current_sprite = m_sprites[LEFT].leap;
-			m_last_direction = LEFT;
-			m_animation_timer = m_leap_duration; // Reset the timer
-		}
-	} else {
-		m_key_pressed[KEY_A] = false;
+	// Reset keys when no key is held
+	if (!keyPressed) {
+		resetKeysPressed();
 	}
 
-	if (graphics::getKeyState(graphics::SCANCODE_D)) {
-		if (!m_key_pressed[KEY_D] && m_animation_timer <= 0.0f) {
-			m_key_pressed[KEY_D] = true;
-			m_pos_x += m_step;
-			graphics::playSound(m_state->getFullAssetPath("sound/jump.wav"), 0.5f, false);
-			m_current_sprite = m_sprites[RIGHT].leap;
-			m_last_direction = RIGHT;
-			m_animation_timer = m_leap_duration; // Reset the timer
-		}
+	if (m_animation_timer > 0.0f) {
+		m_animation_timer -= dt / 1000.0f;
 	} else {
-		m_key_pressed[KEY_D] = false;
-	}
-
-	// Decrease the animation timer
-	if (m_animation_timer > 0.0f) {  
-		m_animation_timer -= dt / 1000.0f;	
-	}
-
-	// Switch back to idle sprite if the timer has run out
-	if (m_animation_timer <= 0.0f) {
-		switch (m_last_direction) {
-			case UP:    m_current_sprite = m_sprites[UP].idle; break;
-			case DOWN:  m_current_sprite = m_sprites[DOWN].idle; break;
-			case LEFT:  m_current_sprite = m_sprites[LEFT].idle; break;
-			case RIGHT: m_current_sprite = m_sprites[RIGHT].idle; break;
-		}
+		m_current_sprite = m_sprites[m_last_direction].idle;
 	}
 	
 
@@ -113,6 +83,8 @@ void Player::init()
 	m_sprites[RIGHT] = { "FroggerIdleR.png", "FroggerLeapR.png" };
 
 	m_current_sprite = m_sprites[UP].idle;
+
+	resetKeysPressed();
 }
 
 
@@ -170,4 +142,11 @@ void Player::resetPlayer()
 	m_current_sprite = m_sprites[UP].idle;
 	m_last_direction = UP;
 	m_animation_timer = m_leap_duration;
+}
+
+
+void Player::resetKeysPressed() {
+	for (bool& keyPressed : m_key_pressed) {
+		keyPressed = false;
+	}
 }
