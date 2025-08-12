@@ -11,7 +11,6 @@ private:
 	class Player* m_player = nullptr;
 	class Level* m_current_level = nullptr;
 	class Button *m_start_button, *m_quit_button, *m_retry_button, *m_exit_button;
-	bool m_isInStart, m_isInQuit,m_isInRetry,m_isInExit = false;
 	bool m_debug_mode;
 	const std::string m_asset_path = ASSET_PATH;
 	status_t m_status = STATUS_START;
