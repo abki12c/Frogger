@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\button.cpp" />
     <ClCompile Include="src\gamestate.cpp" />
     <ClCompile Include="src\gameobject.cpp" />
     <ClCompile Include="src\level.cpp" />
@@ -154,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\box.h" />
+    <ClInclude Include="src\button.hpp" />
     <ClInclude Include="src\config.hpp" />
     <ClInclude Include="src\gamestate.hpp" />
     <ClInclude Include="src\gameobject.hpp" />

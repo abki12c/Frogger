@@ -1,7 +1,7 @@
 #include "gamestate.hpp"
 #include "sgg/graphics.h"
 #include "level.hpp"
-#include "util.hpp"
+#include "button.hpp"
 #include <iostream>
 
 GameState* GameState::m_instance = nullptr;
@@ -41,42 +41,8 @@ void GameState::updateStartScreen(float dt)
 		graphics::setFullScreen(true);
 	}
 
-	graphics::MouseState ms;
-	graphics::getMouseState(ms);
-
-	float mouse_pos_x = graphics::windowToCanvasX(ms.cur_pos_x);
-	float mouse_pos_y = graphics::windowToCanvasY(ms.cur_pos_y);
-
-	// update START text
-	if (mouse_pos_x >= CANVAS_WIDTH / 2 && mouse_pos_x <= CANVAS_WIDTH / 2 + 200 && mouse_pos_y <= CANVAS_HEIGHT - 170 && mouse_pos_y >= CANVAS_HEIGHT - 170 - 60) {
-		if (!m_isInStart) {
-			graphics::playSound(std::string(ASSET_PATH) + "sound/menu-change.mp3", 0.2, false);
-			m_isInStart = true;
-		}
-		if (ms.button_left_pressed) {
-			m_status = STATUS_PLAYING;
-			graphics::playMusic(std::string(ASSET_PATH) + "sound/main-song.mp3", 0.5f, true, 4000);
-		}
-	}
-	else {
-		m_isInStart = false;
-	}
-
-	// update QUIT text
-	if (mouse_pos_x >= CANVAS_WIDTH / 2 && mouse_pos_x <= CANVAS_WIDTH / 2 + 130 && mouse_pos_y <= CANVAS_HEIGHT - 90 && mouse_pos_y >= CANVAS_HEIGHT - 90 - 60) {
-		if (!m_isInQuit) {
-			graphics::playSound(std::string(ASSET_PATH) + "sound/menu-change.mp3", 0.2, false);
-			m_isInQuit = true;
-		}
-		if (ms.button_left_pressed) {
-			graphics::destroyWindow();
-		}
-	}
-	else {
-		m_isInQuit = false;
-	}
-	
-
+	m_start_button->update(dt);
+	m_quit_button->update(dt);
 }
 
 void GameState::updateLevelScreen(float dt)
@@ -89,44 +55,8 @@ void GameState::updateLevelScreen(float dt)
 
 void GameState::updateGameOverScreen(float dt)
 {
-	graphics::MouseState ms;
-	graphics::getMouseState(ms);
-
-
-	float mouse_pos_x = graphics::windowToCanvasX(ms.cur_pos_x);
-	float mouse_pos_y = graphics::windowToCanvasY(ms.cur_pos_y);
-
-	// update RETRY text
-	if (mouse_pos_x >= CANVAS_WIDTH / 2 - 500 && mouse_pos_x <= CANVAS_WIDTH / 2 - 500 + 250 && mouse_pos_y <= CANVAS_HEIGHT / 2 + 400 && mouse_pos_y >= CANVAS_HEIGHT / 2 + 400 - 60) {
-		if (!m_isInRetry) {
-			graphics::playSound(std::string(ASSET_PATH) + "sound/menu-change.mp3", 0.2, false);
-			m_isInRetry = true;
-		}
-		if (ms.button_left_pressed) {
-			getPlayer()->resetLives();
-			getLevel()->resetLevel();
-			m_score = 0;
-			m_status = STATUS_PLAYING;
-			graphics::playMusic(std::string(ASSET_PATH) + "sound/main-song.mp3", 0.5f, true, 4000);
-		}
-	}
-	else {
-		m_isInRetry = false;
-	}
-
-	// update EXIT text
-	if (mouse_pos_x >= CANVAS_WIDTH / 2 + 300 && mouse_pos_x <= CANVAS_WIDTH / 2 + 300 + 150 && mouse_pos_y <= CANVAS_HEIGHT / 2 + 400 && mouse_pos_y >= CANVAS_HEIGHT / 2 + 400 - 60) {
-		if (!m_isInExit) {
-			graphics::playSound(std::string(ASSET_PATH) + "sound/menu-change.mp3", 0.2, false);
-			m_isInExit = true;
-		}
-		if (ms.button_left_pressed) {
-			graphics::destroyWindow();
-		}
-	}
-	else {
-		m_isInExit = false;
-	}
+	m_retry_button->update(dt);
+	m_exit_button->update(dt);
 }
 
 void GameState::drawStartScreen()
@@ -137,31 +67,8 @@ void GameState::drawStartScreen()
 	br2.texture = getFullAssetPath("wallpaper.png");
 	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br2);
 
-	graphics::MouseState ms;
-	graphics::getMouseState(ms);
-
-	
-	float mouse_pos_x = graphics::windowToCanvasX(ms.cur_pos_x);
-	float mouse_pos_y = graphics::windowToCanvasY(ms.cur_pos_y);
-
-	// draw START text
-	if (mouse_pos_x >= CANVAS_WIDTH / 2 && mouse_pos_x <=CANVAS_WIDTH / 2 + 200 && mouse_pos_y <= CANVAS_HEIGHT - 170 && mouse_pos_y >= CANVAS_HEIGHT - 170 -60) {
-		SETCOLOR(br.fill_color, 0, 0, 255);
-	}
-	else {
-		SETCOLOR(br.fill_color, 0, 128, 0);
-	}
-	graphics::drawText(CANVAS_WIDTH / 2, CANVAS_HEIGHT - 170, 60, "START", br);
-
-	
-	// draw QUIT text
-	if (mouse_pos_x >= CANVAS_WIDTH / 2 && mouse_pos_x <= CANVAS_WIDTH / 2 + 130 && mouse_pos_y <= CANVAS_HEIGHT - 90 && mouse_pos_y >= CANVAS_HEIGHT - 90 - 60) {
-		SETCOLOR(br.fill_color, 0, 0, 255);
-	}
-	else {
-		SETCOLOR(br.fill_color, 0, 128, 0);
-	}
-	graphics::drawText(CANVAS_WIDTH / 2, CANVAS_HEIGHT - 100, 60, "QUIT", br);
+	m_start_button->draw();
+	m_quit_button->draw();
 }
 
 void GameState::drawLevelScreen()
@@ -177,32 +84,9 @@ void GameState::drawGameOverScreen()
 	graphics::Brush br;
 	graphics::drawText(CANVAS_WIDTH/2 -200, CANVAS_HEIGHT/2,80,"GAME OVER",br);
 	graphics::drawText(CANVAS_WIDTH / 2 - 80, CANVAS_HEIGHT / 2 + 150, 40, "Score: " + std::to_string(m_score), br);
-	
-	graphics::MouseState ms;
-	graphics::getMouseState(ms);
 
-
-	float mouse_pos_x = graphics::windowToCanvasX(ms.cur_pos_x);
-	float mouse_pos_y = graphics::windowToCanvasY(ms.cur_pos_y);
-
-	// draw RETRY text
-	if (mouse_pos_x >= CANVAS_WIDTH / 2 -500 && mouse_pos_x <= CANVAS_WIDTH / 2 -500 + 250 && mouse_pos_y <= CANVAS_HEIGHT / 2 + 400 && mouse_pos_y >= CANVAS_HEIGHT / 2 + 400 - 60) {
-		SETCOLOR(br.fill_color, 0, 0, 255);
-	}
-	else {
-		SETCOLOR(br.fill_color, 0, 128, 0);
-	}
-	graphics::drawText(CANVAS_WIDTH / 2 - 500, CANVAS_HEIGHT / 2 + 400, 80, "RETRY", br);
-
-
-	// draw EXIT text
-	if (mouse_pos_x >= CANVAS_WIDTH / 2 +300 && mouse_pos_x <= CANVAS_WIDTH / 2 + 300 + 150 && mouse_pos_y <= CANVAS_HEIGHT / 2 + 400 && mouse_pos_y >= CANVAS_HEIGHT / 2 + 400 - 60) {
-		SETCOLOR(br.fill_color, 0, 0, 255);
-	}
-	else {
-		SETCOLOR(br.fill_color, 0, 128, 0);
-	}
-	graphics::drawText(CANVAS_WIDTH / 2 + 300, CANVAS_HEIGHT / 2 + 400, 80, "EXIT", br);
+	m_retry_button->draw();
+	m_exit_button->draw();
 
 }
 
@@ -223,8 +107,7 @@ std::string GameState::getFullAssetPath(const std::string& asset) const
 
 void GameState::update(float dt)
 {
-	// Skip an update if a long delay is detected 
-	// to avoid messing up the collision simulation
+	// Skip an update if a long delay is detected to avoid messing up the collision simulation
 	if (dt > 500) {
 		return;
 	}
@@ -243,11 +126,9 @@ void GameState::draw()
 
 	if (m_status == STATUS_START) {
 		drawStartScreen();
-	}
-	else if (m_status == STATUS_PLAYING) {
+	} else if (m_status == STATUS_PLAYING) {
 		drawLevelScreen();
-	}
-	else {
+	} else {
 		drawGameOverScreen();
 	}
 	
@@ -260,6 +141,45 @@ void GameState::init()
 
 	m_player = new Player("Frog");
 	m_player->init();
+
+	m_start_button = new Button(/*width*/ 200, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2, /*start_pos_y*/ CANVAS_HEIGHT - 230, /*draw_pos_x*/ CANVAS_WIDTH / 2, /*draw_pos_y*/ CANVAS_HEIGHT - 170, /*text*/ "START");
+	m_quit_button = new Button(/*width*/ 130, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2, /*start_pos_y*/ CANVAS_HEIGHT - 150, /*draw_pos_x*/ CANVAS_WIDTH / 2, /*draw_pos_y*/  CANVAS_HEIGHT - 90, /*text*/ "QUIT");
+	m_retry_button = new Button(/*width*/ 250, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2 - 500, /*start_pos_y*/ CANVAS_HEIGHT / 2 + 340, /*draw_pos_x*/ CANVAS_WIDTH / 2 - 500, /*draw_pos_y*/ CANVAS_HEIGHT / 2 + 400, /*text*/ "RETRY");
+	m_exit_button = new Button(/*width*/ 150, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2 + 300, /*start_pos_y*/ CANVAS_HEIGHT / 2 + 340, /*draw_pos_x*/ CANVAS_WIDTH / 2 + 300, /*draw_pos_y*/  CANVAS_HEIGHT / 2 + 400, /*text*/ "EXIT");
+
+	// Set click callbacks:
+	m_start_button->setOnClick([this]() {
+		m_status = STATUS_PLAYING;
+		graphics::playMusic(getFullAssetPath("sound/main-song.mp3"), 0.5f, true, 4000);
+	});
+
+	m_quit_button->setOnClick([]() {
+		graphics::destroyWindow();
+	});
+
+	m_retry_button->setOnClick([this]() {
+		getPlayer()->resetLives();
+		getLevel()->resetLevel();
+		m_score = 0;
+		m_status = STATUS_PLAYING;
+		graphics::playMusic(getFullAssetPath("sound/main-song.mp3"), 0.5f, true, 4000);
+	});
+
+	m_exit_button->setOnClick([]() {
+		graphics::destroyWindow();
+	});
+
+	// Play sound on hover enter
+	auto playHoverSound = [this]() {
+		graphics::playSound(getFullAssetPath("sound/menu-change.mp3"), 0.2f, false);
+	};
+
+	// Set hover callbacks:
+	m_start_button->setOnHoverEnter(playHoverSound);
+	m_quit_button->setOnHoverEnter(playHoverSound);
+	m_retry_button->setOnHoverEnter(playHoverSound);
+	m_exit_button->setOnHoverEnter(playHoverSound);
+
 
 	graphics::preloadBitmaps(ASSET_PATH);
 	graphics::setFont(getFullAssetPath("fonts/liberation-sans.regular.ttf"));
