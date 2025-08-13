@@ -150,6 +150,7 @@
     <ClCompile Include="src\level.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\moving_object.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\vehicle.cpp" />
   </ItemGroup>
@@ -161,6 +162,7 @@
     <ClInclude Include="src\gameobject.hpp" />
     <ClInclude Include="src\level.hpp" />
     <ClInclude Include="src\log.hpp" />
+    <ClInclude Include="src\moving_object.hpp" />
     <ClInclude Include="src\player.hpp" />
     <ClInclude Include="src\util.hpp" />
     <ClInclude Include="src\vehicle.hpp" />

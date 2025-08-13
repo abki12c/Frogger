@@ -10,7 +10,6 @@
 
 void Level::spawnMovingObjects()
 {
-	int active_count;
 	// Update game objects in each lane
 	for (auto& lane : lanes) {
 		// Decrement spawn timer
@@ -265,8 +264,6 @@ void Level::update(float dt)
 			m_levelCompleteSoundPlayed = false;
 		}
 	}
-	
-	GameObject::update(dt);
 }
 
 void Level::draw()
@@ -288,7 +285,7 @@ void Level::draw()
 	graphics::drawText(110, CANVAS_HEIGHT - 60, 30.f, "Lives", m_brush_text);
 	int lives = m_state->getPlayer()->getLives();
 	for (int i = 0; i < lives;i++) {
-		graphics::drawRect(70 + 40*i, CANVAS_HEIGHT - 35, 30.f, 30.f, m_brush_lives);
+		graphics::drawRect(70.f + 40.f*i, CANVAS_HEIGHT - 35, 30.f, 30.f, m_brush_lives);
 	}
 
 	// Draw time bar
@@ -374,7 +371,7 @@ void Level::init()
 Level::Level(const std::string & name)
 	: GameObject(name)
 {
-
+	init();
 }
 
 Level::~Level()

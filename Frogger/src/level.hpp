@@ -8,6 +8,16 @@
 #include <sgg/graphics.h>
 #include "player.hpp"
 
+struct Lane {
+	int16_t y_position;
+	float speed;
+	float spawn_timer;
+	float default_spawn_timer;
+	float obj_width;
+	float obj_height;
+	std::string obj_sprite;
+};
+
 class Level : public GameObject
 {
 private:
@@ -34,16 +44,6 @@ private:
 	graphics::Brush m_block_brush;
 	graphics::Brush m_block_brush_debug;
 
-	struct Lane {
-		int16_t y_position;
-		float speed;
-		float spawn_timer;
-		float default_spawn_timer;
-		float obj_width;
-		float obj_height;
-		std::string obj_sprite;
-	};
-
 	std::array<Lane, 8> lanes;
 
 	void spawnMovingObjects();
@@ -58,5 +58,5 @@ public:
 	void draw() override;
 	void init() override;	
 	Level(const std::string& name = "Level0");
-	~Level() override;
+	~Level();
 };

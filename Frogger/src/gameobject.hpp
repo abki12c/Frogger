@@ -11,10 +11,9 @@ protected:
 	bool m_active = true;	
 public:
 	GameObject(const std::string& name = "");
-	virtual void update(float dt) {};
-	virtual void init() {};
-	virtual void draw() {};
-	virtual ~GameObject() {}
+	virtual void update(float dt) = 0;
+	virtual void init() = 0;
+	virtual void draw() = 0;
 	bool isActive() { return m_active; }
 	void setActive(bool a) { m_active = a; }
 };

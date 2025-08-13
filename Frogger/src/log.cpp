@@ -2,38 +2,6 @@
 #include "sgg/graphics.h"
 #include "config.hpp"
 #include "util.hpp"
-#include "gamestate.hpp"
-
-void Log::update(float dt)
-{
-    m_pos_x += m_speed * graphics::getDeltaTime();
-
-    if (m_speed > 0 && m_pos_x > CANVAS_WIDTH + m_width || m_speed < 0 && m_pos_x < -m_width) {
-        m_active = false;
-    }
-}
-
-void Log::init()
-{
-    m_brush.outline_opacity = 0.0f;
-    m_brush.texture = m_state->getFullAssetPath(m_sprite);
-
-    if (m_speed > 0) {
-        m_pos_x -= m_width;
-    }
-    else {
-        m_pos_x += m_width;
-    }
-}
-
-void Log::draw()
-{
-    graphics::drawRect(m_pos_x, m_pos_y, m_width, m_height, m_brush);
-
-    if (m_state->getDebugMode()) {
-        debugDraw();
-    }
-}
 
 void Log::debugDraw()
 {
@@ -52,9 +20,7 @@ void Log::debugDraw()
 }
 
 Log::Log(const std::string name, float x, float y, float speed, const float width, const float height, const std::string& sprite)
-    : GameObject(name), m_pos_x(x), m_pos_y(y), m_speed(speed), m_width(width), m_height(height), m_sprite(sprite) {
-    init();
-}
+    : MovingObject(name, x, y, speed, width, height, sprite) {};
 
 Log::~Log()
 {

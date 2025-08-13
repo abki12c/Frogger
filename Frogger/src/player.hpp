@@ -28,7 +28,7 @@ private:
 	std::unordered_map<Direction, SpriteSet> m_sprites;
 	std::string m_current_sprite;
 public:
-	Player(const std::string name) : GameObject(name) {};
+	Player(const std::string name);
 	void update(float dt) override;
 	void draw() override;
 	void init() override;

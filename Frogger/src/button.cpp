@@ -9,8 +9,7 @@ Button::Button(float width, float height, float start_pos_x, float start_pos_y, 
 }
 
 bool Button::isHovered()
-{	
-	graphics::getMouseState(m_mouse_state);
+{
 	float mouse_pos_x = graphics::windowToCanvasX(m_mouse_state.cur_pos_x);
 	float mouse_pos_y = graphics::windowToCanvasY(m_mouse_state.cur_pos_y);
 	return (mouse_pos_x >= m_start_pos_x && mouse_pos_x <= m_start_pos_x + m_width) &&
@@ -19,12 +18,12 @@ bool Button::isHovered()
 
 bool Button::isClicked()
 {
-	graphics::getMouseState(m_mouse_state);
 	return m_mouse_state.button_left_pressed;
 }
 
 void Button::update(float dt)
 {
+    graphics::getMouseState(m_mouse_state);
     bool hovered = isHovered();
 
     // Hover enter event

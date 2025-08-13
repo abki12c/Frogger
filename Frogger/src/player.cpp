@@ -83,8 +83,6 @@ void Player::init()
 	m_sprites[RIGHT] = { "FroggerIdleR.png", "FroggerLeapR.png" };
 
 	m_current_sprite = m_sprites[UP].idle;
-
-	resetKeysPressed();
 }
 
 
@@ -149,4 +147,9 @@ void Player::resetKeysPressed() {
 	for (bool& keyPressed : m_key_pressed) {
 		keyPressed = false;
 	}
+}
+
+
+Player::Player(const std::string name) : GameObject(name) {
+	init();
 }
