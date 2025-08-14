@@ -24,7 +24,7 @@ void Level::spawnMovingObjects()
 			if(lane.obj_sprite.find("L",0) == 0) {
 				Log* log = new Log("log", x_position, lane.y_position, lane.speed, lane.obj_width, lane.obj_height, lane.obj_sprite);
 				game_object = log;
-			}else{
+			} else {
 				Vehicle* new_vehicle = new Vehicle("vehicle", x_position, lane.y_position, lane.speed, lane.obj_width, lane.obj_height, lane.obj_sprite);
 				game_object = new_vehicle;
 			}
@@ -173,7 +173,7 @@ void Level::checkCollisions()
 
 					if (!m_levelCompleteSoundPlayed) {
 						graphics::stopMusic();
-						graphics::playSound(m_state->getFullAssetPath("sound/songLevelComplete.mp3"), 0.5f, false);
+						graphics::playMusic(m_state->getFullAssetPath("sound/songLevelComplete.mp3"), 0.5f, false);
 						m_levelCompleteSoundPlayed = true;
 						m_levelCompleteSoundTimer = 0.0f;
 					}
@@ -296,11 +296,9 @@ void Level::draw()
 
 	if (m_remaining_time < m_total_time * 0.3f) {
 		SETCOLOR(m_brush_time.fill_color, 255.0f, 0.0f, 0.0f);
-	}
-	else if (m_remaining_time < m_total_time * 0.6f) {
+	} else if (m_remaining_time < m_total_time * 0.6f) {
 		SETCOLOR(m_brush_time.fill_color, 255.0f, 165.0f, 0.0f);
-	}
-	else {
+	} else {
 		SETCOLOR(m_brush_time.fill_color, 0.0f, 128.0f, 0.0f);
 	}
 
@@ -311,10 +309,6 @@ void Level::draw()
 
 void Level::init()
 {
-	for (auto p_gob : m_dynamic_objects)
-		if (p_gob) p_gob->init();
-
-
 	readFile("level.txt");
 
 	m_block_brush.outline_opacity = 0.0f;

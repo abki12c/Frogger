@@ -137,10 +137,7 @@ void GameState::draw()
 void GameState::init()
 {
 	m_current_level = new Level("Level-1");
-	m_current_level->init();
-
 	m_player = new Player("Frog");
-	m_player->init();
 
 	m_start_button = new Button(/*width*/ 200, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2, /*start_pos_y*/ CANVAS_HEIGHT - 230, /*draw_pos_x*/ CANVAS_WIDTH / 2, /*draw_pos_y*/ CANVAS_HEIGHT - 170, /*text*/ "START");
 	m_quit_button = new Button(/*width*/ 130, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2, /*start_pos_y*/ CANVAS_HEIGHT - 150, /*draw_pos_x*/ CANVAS_WIDTH / 2, /*draw_pos_y*/  CANVAS_HEIGHT - 90, /*text*/ "QUIT");
