@@ -21,7 +21,5 @@ public:
 	float getHeight() const { return m_height; }
 	float getSpeed() const { return m_speed;  }
 
-	Box getBoundingBox() const;
-
 	MovingObject(const std::string& name, float x, float y, float speed, const float width, const float height, const std::string& sprite);
 };
