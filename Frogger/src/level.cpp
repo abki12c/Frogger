@@ -132,11 +132,8 @@ void Level::checkCollisions()
 			if (dynamic_cast<Vehicle*>(gameObject)) {
 				Vehicle* vehicle = dynamic_cast<Vehicle*>(gameObject);
 
-				// Create a Box for the game object
-				Box vehicleBox(vehicle->getPosX(), vehicle->getPosY(), vehicle->getWidth(), vehicle->getHeight());
-
 				// Check for collision
-				if (m_state->getPlayer()->intersect(vehicleBox)) {
+				if (m_state->getPlayer()->intersect(*vehicle)) {
 					graphics::playSound(m_state->getFullAssetPath("sound/splat.wav"), 0.5f, false);
 					m_state->getPlayer()->resetPlayer();
 					m_state->getPlayer()->reduceLives();
@@ -145,11 +142,8 @@ void Level::checkCollisions()
 			} else {
 				Log* log = dynamic_cast<Log*>(gameObject);
 
-				// Create a Box for the game object
-				Box logBox(log->getPosX(), log->getPosY(), log->getWidth(), log->getHeight());
-
 				// Check for collision
-				if (m_state->getPlayer()->intersect(logBox)) {
+				if (m_state->getPlayer()->intersect(*log)) {
 					m_state->getPlayer()->setIsOnLog(true);
 					m_state->getPlayer()->setOnLogSpeed(log->getSpeed());
 					break;
@@ -352,8 +346,7 @@ void Level::init()
 		if (lane.obj_sprite.find("L", 0) == 0) {
 			Log* log = new Log("log", x_position, lane.y_position, lane.speed, lane.obj_width, lane.obj_height, lane.obj_sprite);
 			game_object = log;
-		}
-		else {
+		} else {
 			Vehicle* new_vehicle = new Vehicle("vehicle", x_position, lane.y_position, lane.speed, lane.obj_width, lane.obj_height, lane.obj_sprite);
 			game_object = new_vehicle;
 		}

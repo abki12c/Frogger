@@ -50,8 +50,13 @@ void MovingObject::init()
     }
 }
 
+Box MovingObject::getBoundingBox() const
+{
+    return Box(m_pos_x, m_pos_y, m_width, m_height);
+}
+
 MovingObject::MovingObject(const std::string& name, float x, float y, float speed, const float width, const float height, const std::string& sprite)
-	: GameObject(name), m_pos_x(x), m_pos_y(y), m_speed(speed), m_width(width), m_height(height), m_sprite(sprite)
+	: GameObject(name), Box(x, y, width, height), m_speed(speed), m_sprite(sprite)
 {
 	init();
 }

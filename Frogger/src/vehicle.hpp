@@ -8,5 +8,5 @@ public:
 	Vehicle(const std::string& name, float x, float y, float speed, const float width, const float height, const std::string& sprite);
 	~Vehicle();
 protected:
-	void debugDraw();
+	void debugDraw() override;
 };
