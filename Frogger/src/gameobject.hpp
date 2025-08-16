@@ -16,4 +16,5 @@ public:
 	virtual void draw() = 0;
 	bool isActive() { return m_active; }
 	void setActive(bool a) { m_active = a; }
+	std::string getName() { return m_name; }
 };

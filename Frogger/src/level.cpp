@@ -129,10 +129,10 @@ void Level::checkCollisions()
 	// Check collisions with dynamic objects
 	for (auto& gameObject : m_dynamic_objects) {
 		if (gameObject && gameObject->isActive()) {
-			if (dynamic_cast<Vehicle*>(gameObject)) {
+			if (gameObject->getName() == "vehicle") {
 				Vehicle* vehicle = dynamic_cast<Vehicle*>(gameObject);
 
-				// Check for collision
+				// Check for collision with vehicle
 				if (m_state->getPlayer()->intersect(*vehicle)) {
 					graphics::playSound(m_state->getFullAssetPath("sound/splat.wav"), 0.5f, false);
 					m_state->getPlayer()->resetPlayer();
@@ -142,7 +142,7 @@ void Level::checkCollisions()
 			} else {
 				Log* log = dynamic_cast<Log*>(gameObject);
 
-				// Check for collision
+				// Check for collision with log
 				if (m_state->getPlayer()->intersect(*log)) {
 					m_state->getPlayer()->setIsOnLog(true);
 					m_state->getPlayer()->setOnLogSpeed(log->getSpeed());
@@ -160,10 +160,7 @@ void Level::checkCollisions()
 				if (m_visited_goals[0] && m_visited_goals[1] && m_visited_goals[2] && m_visited_goals[3]) {
 					// collected all frogs
 					m_state->getInstance()->updateScore(50);
-					m_visited_goals[0] = false;
-					m_visited_goals[1] = false;
-					m_visited_goals[2] = false;
-					m_visited_goals[3] = false;
+					m_visited_goals.fill(false);
 
 					if (!m_levelCompleteSoundPlayed) {
 						graphics::stopMusic();
@@ -178,19 +175,16 @@ void Level::checkCollisions()
 				
 				m_state->getPlayer()->resetPlayer();
 				m_remaining_time = m_total_time;
-			}
-			else {
+			}else {
 				graphics::playSound(m_state->getFullAssetPath("sound/squash.wav"), 0.5f, false);
 				m_state->getPlayer()->resetPlayer();
 				m_state->getPlayer()->reduceLives();
 			}
-		}
-		else if (m_block_names[i] == "home.png" && m_state->getPlayer()->intersect(m_blocks[i])) {
+		} else if (m_block_names[i] == "home.png" && m_state->getPlayer()->intersect(m_blocks[i])) {
 			graphics::playSound(m_state->getFullAssetPath("sound/squash.wav"), 0.5f, false);
 			m_state->getPlayer()->resetPlayer();
 			m_state->getPlayer()->reduceLives();
-		} 
-		else if (m_block_names[i] == "water.png" && !m_state->getPlayer()->getIsOnLog() && m_state->getPlayer()->intersect(m_blocks[i])) {
+		} else if (m_block_names[i] == "water.png" && !m_state->getPlayer()->getIsOnLog() && m_state->getPlayer()->intersect(m_blocks[i])) {
 			graphics::playSound(m_state->getFullAssetPath("sound/splash.wav"), 1.0f, false);
 			m_state->getPlayer()->resetPlayer();
 			m_state->getPlayer()->reduceLives();
@@ -321,10 +315,7 @@ void Level::init()
 	m_brush_lives.texture = m_state->getFullAssetPath("life.png");
 	m_brush_lives.outline_opacity = 0.0f;
 
-	m_visited_goals[0] = false;
-	m_visited_goals[1] = false;
-	m_visited_goals[2] = false;
-	m_visited_goals[3] = false;
+	m_visited_goals.fill(false);
 
 	lanes = { {
 		{ 735, 0.07f, 3.0f, 3.0f, 73.5f, 40.5f, "car1.png" },

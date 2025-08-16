@@ -18,6 +18,12 @@ struct Lane {
 	std::string obj_sprite;
 };
 
+struct Block {
+	Box box;
+	std::string texture;
+};
+
+
 class Level : public GameObject
 {
 private:
