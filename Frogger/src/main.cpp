@@ -16,6 +16,14 @@ void draw()
 void init()
 {
     GameState::getInstance()->init();
+
+    // Set warnings, errors and failed assertions to be printed on the console
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
 }
 
 int main()
@@ -38,6 +46,8 @@ int main()
 
     GameState::getInstance()->releaseInstance();
     graphics::destroyWindow();
+
+    _CrtDumpMemoryLeaks();
 
     return 0;
 }
