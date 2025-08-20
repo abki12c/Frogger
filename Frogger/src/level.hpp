@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gameobject.hpp"
+#include "moving_object.hpp"
 #include <vector>
 #include <list>
 #include <string>
@@ -18,16 +18,17 @@ struct Lane {
 	std::string obj_sprite;
 };
 
+enum class BlockType { Water, Grass, Home, HomeGoal, Road };
+
 struct Block {
 	Box box;
-	std::string texture;
+	BlockType type;
 };
-
 
 class Level : public GameObject
 {
 private:
-	graphics::Brush m_brush_time;
+	graphics::Brush m_brush_time_green, m_brush_time_orange, m_brush_time_red;
 	graphics::Brush m_brush_text;
 	graphics::Brush m_brush_frog_safe;
 	graphics::Brush m_brush_lives;
@@ -40,14 +41,13 @@ private:
 	bool m_playedTimeRunsOutSound = false;
 	bool m_levelCompleteSoundPlayed = false;
 
-	std::list<GameObject*> m_dynamic_objects;
+	std::list<MovingObject*> m_dynamic_objects;
 	std::array<bool,4> m_visited_goals;
 	
 	// collidable blocks
-	std::vector<Box> m_blocks;
-	std::vector<std::string> m_block_names;
+	std::vector<Block> m_blocks;
 	const float m_block_size = 79.0f;
-	graphics::Brush m_block_brush;
+	std::unordered_map<BlockType, graphics::Brush> m_blockBrushes;
 	graphics::Brush m_block_brush_debug;
 
 	std::array<Lane, 8> lanes;

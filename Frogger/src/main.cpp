@@ -2,7 +2,6 @@
 #include "gamestate.hpp"
 #include "config.hpp"
 
-
 void update(float dt)
 {
     GameState::getInstance()->update(dt);
@@ -21,7 +20,6 @@ void init()
 
 int main()
 {
-
     graphics::createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Frogger");
 
     init();
@@ -37,6 +35,9 @@ int main()
     graphics::setCanvasScaleMode(graphics::CANVAS_SCALE_FIT);
 
     graphics::startMessageLoop();
+
+    GameState::getInstance()->releaseInstance();
+    graphics::destroyWindow();
 
     return 0;
 }

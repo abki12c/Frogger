@@ -50,8 +50,8 @@ void MovingObject::init()
     }
 }
 
-MovingObject::MovingObject(const std::string& name, float x, float y, float speed, const float width, const float height, const std::string& sprite)
-	: GameObject(name), Box(x, y, width, height), m_speed(speed), m_sprite(sprite)
+MovingObject::MovingObject(const std::string& name, float x, float y, float speed, const float width, const float height, const std::string& sprite, ObjectType type)
+	: GameObject(name), Box(x, y, width, height), m_speed(speed), m_sprite(sprite), m_type(type)
 {
 	init();
 }

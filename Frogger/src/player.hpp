@@ -20,7 +20,7 @@ private:
 	float m_initialPosX, m_initialPosY, m_onLogSpeed;
 	bool m_isOnLog = false;
 	const float m_step = 79.0f;
-	int m_current_lives;
+	unsigned char m_current_lives;
 	float m_animation_timer = 0.0f; // Timer to control animation
 	const float m_leap_duration = 0.25f; // How long the leap sprite should be displayed (in seconds)
 	Direction m_last_direction = UP; // default direction
@@ -39,7 +39,7 @@ public:
 	float getInitialPosX() const { return m_initialPosX; }
 	float getInitialPosY() const { return m_initialPosY; }
 	bool getIsOnLog() const { return m_isOnLog; }
-	int getLives() const { return m_current_lives; }
+	unsigned char getLives() const { return m_current_lives; }
 
 	// Seters
 	void setPosX(float x);

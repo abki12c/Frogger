@@ -20,7 +20,7 @@ void Log::debugDraw()
 }
 
 Log::Log(const std::string name, float x, float y, float speed, const float width, const float height, const std::string& sprite)
-    : MovingObject(name, x, y, speed, width, height, sprite) {};
+    : MovingObject(name, x, y, speed, width, height, sprite, ObjectType::log) {};
 
 Log::~Log()
 {

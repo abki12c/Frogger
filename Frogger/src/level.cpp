@@ -20,7 +20,7 @@ void Level::spawnMovingObjects()
 			// Determine spawn position based on speed
 			float x_position = (lane.speed > 0) ? 0.f : CANVAS_WIDTH;
 
-			GameObject* game_object;
+			MovingObject* game_object;
 			if(lane.obj_sprite.find("L",0) == 0) {
 				Log* log = new Log("log", x_position, lane.y_position, lane.speed, lane.obj_width, lane.obj_height, lane.obj_sprite);
 				game_object = log;
@@ -43,7 +43,7 @@ void Level::removeInactiveObjects()
 {
 	// Remove inactive game objects
 	m_dynamic_objects.erase(
-		std::remove_if(m_dynamic_objects.begin(), m_dynamic_objects.end(), [](GameObject* game_object) {
+		std::remove_if(m_dynamic_objects.begin(), m_dynamic_objects.end(), [](MovingObject* game_object) {
 			if (game_object && !game_object->isActive()) {
 				delete game_object;
 				game_object = nullptr;
@@ -69,29 +69,27 @@ void Level::readFile(const std::string& filename)
 		for (int x = 0; x < line.length(); ++x) {
 			float block_x = x * m_block_size;
 			float block_y = y * m_block_size;
+			Block new_block;
+			new_block.box = Box(block_x, block_y, m_block_size, m_block_size);
 
 			switch (line[x]) {
 				case '~':
-					m_blocks.push_back(Box(block_x, block_y, m_block_size, m_block_size));
-					m_block_names.push_back("water.png");
+					new_block.type = BlockType::Water;
 					break;
 				case '-':
-					m_blocks.push_back(Box(block_x, block_y, m_block_size, m_block_size));
-					m_block_names.push_back("grass.png");
+					new_block.type = BlockType::Grass;
 					break;
 				case '*':
-					m_blocks.push_back(Box(block_x, block_y, m_block_size, m_block_size));
-					m_block_names.push_back("home.png");
+					new_block.type = BlockType::Home;
 					break;
 				case 'R':
-					m_blocks.push_back(Box(block_x, block_y, m_block_size, m_block_size));
-					m_block_names.push_back("home_goal.png");
+					new_block.type = BlockType::HomeGoal;
 					break;
 				case 'x':
-					m_blocks.push_back(Box(block_x, block_y, m_block_size, m_block_size));
-					m_block_names.push_back("road.png");
+					new_block.type = BlockType::Road;
 					break;
 			}
+			m_blocks.push_back(new_block);
 		}
 		y++;
 	}
@@ -102,21 +100,19 @@ void Level::readFile(const std::string& filename)
 
 void Level::drawBlock(int i)
 {
-	Box& box = m_blocks[i];
-	std::string& name = m_block_names[i];
+	Box& box = m_blocks[i].box;
+	BlockType blockType = m_blocks[i].type;
 
 	float x = box.m_pos_x + 35;
 	float y = box.m_pos_y + 25;
 
-	m_block_brush.texture = m_state->getFullAssetPath(m_block_names[i]);
-
-	graphics::drawRect(x, y, m_block_size, m_block_size, m_block_brush);
+	graphics::drawRect(x, y, m_block_size, m_block_size, m_blockBrushes[blockType]);
 
 	if (m_state->getDebugMode())
 		graphics::drawRect(x, y, m_block_size, m_block_size, m_block_brush_debug);
 
 	// Draw additional sprite for visited home_goal.png
-    if (m_block_names[i] == "home_goal.png" && (i==2 || i==5 || i==8 || i==11) && m_visited_goals[(i-2)/3]) {
+    if (m_blocks[i].type == BlockType::HomeGoal && (i==2 || i==5 || i==8 || i==11) && m_visited_goals[(i-2)/3]) {
 		graphics::drawRect(x, y, m_block_size-10, m_block_size-10, m_brush_frog_safe);
 	}
 
@@ -129,7 +125,7 @@ void Level::checkCollisions()
 	// Check collisions with dynamic objects
 	for (auto& gameObject : m_dynamic_objects) {
 		if (gameObject && gameObject->isActive()) {
-			if (gameObject->getName() == "vehicle") {
+			if (gameObject->getType() == ObjectType::vehicle) {
 				Vehicle* vehicle = dynamic_cast<Vehicle*>(gameObject);
 
 				// Check for collision with vehicle
@@ -154,7 +150,7 @@ void Level::checkCollisions()
 
 	// check collision with blocks
 	for (int i = 0; i < m_blocks.size(); i++) {
-		if (m_block_names[i] == "home_goal.png" && m_state->getPlayer()->intersect(m_blocks[i])) {
+		if (m_blocks[i].type == BlockType::HomeGoal && m_state->getPlayer()->intersect(m_blocks[i].box)) {
 			if (!m_visited_goals[(i - 2) / 3]) {
 				m_visited_goals[(i - 2) / 3] = true;
 				if (m_visited_goals[0] && m_visited_goals[1] && m_visited_goals[2] && m_visited_goals[3]) {
@@ -180,11 +176,11 @@ void Level::checkCollisions()
 				m_state->getPlayer()->resetPlayer();
 				m_state->getPlayer()->reduceLives();
 			}
-		} else if (m_block_names[i] == "home.png" && m_state->getPlayer()->intersect(m_blocks[i])) {
+		} else if (m_blocks[i].type == BlockType::Home && m_state->getPlayer()->intersect(m_blocks[i].box)) {
 			graphics::playSound(m_state->getFullAssetPath("sound/squash.wav"), 0.5f, false);
 			m_state->getPlayer()->resetPlayer();
 			m_state->getPlayer()->reduceLives();
-		} else if (m_block_names[i] == "water.png" && !m_state->getPlayer()->getIsOnLog() && m_state->getPlayer()->intersect(m_blocks[i])) {
+		} else if (m_blocks[i].type == BlockType::Water && !m_state->getPlayer()->getIsOnLog() && m_state->getPlayer()->intersect(m_blocks[i].box)) {
 			graphics::playSound(m_state->getFullAssetPath("sound/splash.wav"), 1.0f, false);
 			m_state->getPlayer()->resetPlayer();
 			m_state->getPlayer()->reduceLives();
@@ -239,7 +235,7 @@ void Level::update(float dt)
 	// game over
 	if (m_state->getPlayer()->getLives() == 0) {
 		graphics::stopMusic();
-		m_state->getInstance()->setStatus(GameState::STATUS_GAME_OVER);
+		m_state->getInstance()->setStatus(STATUS_GAME_OVER);
 		graphics::playSound(m_state->getFullAssetPath("sound/game-over.wav"),0.5f,false);
 	}
 
@@ -271,7 +267,7 @@ void Level::draw()
 
 	// draw lives
 	graphics::drawText(110, CANVAS_HEIGHT - 60, 30.f, "Lives", m_brush_text);
-	int lives = m_state->getPlayer()->getLives();
+	unsigned char lives = m_state->getPlayer()->getLives();
 	for (int i = 0; i < lives;i++) {
 		graphics::drawRect(70.f + 40.f*i, CANVAS_HEIGHT - 35, 30.f, 30.f, m_brush_lives);
 	}
@@ -280,14 +276,13 @@ void Level::draw()
 	float time_bar_width = (m_remaining_time / m_total_time) * 100.0f; // Full width = 100 units
 	float time_bar_x = CANVAS_WIDTH - 70 - (100 - time_bar_width) / 2; // Centering
 	graphics::drawText(CANVAS_WIDTH - 100, CANVAS_HEIGHT - 60, 30.f, "Time", m_brush_text);
-	graphics::drawRect(time_bar_x, CANVAS_HEIGHT -40, time_bar_width,20.f, m_brush_time);
 
 	if (m_remaining_time < m_total_time * 0.3f) {
-		SETCOLOR(m_brush_time.fill_color, 255.0f, 0.0f, 0.0f);
+		graphics::drawRect(time_bar_x, CANVAS_HEIGHT - 40, time_bar_width, 20.f, m_brush_time_red);
 	} else if (m_remaining_time < m_total_time * 0.6f) {
-		SETCOLOR(m_brush_time.fill_color, 255.0f, 165.0f, 0.0f);
+		graphics::drawRect(time_bar_x, CANVAS_HEIGHT - 40, time_bar_width, 20.f, m_brush_time_orange);
 	} else {
-		SETCOLOR(m_brush_time.fill_color, 0.0f, 128.0f, 0.0f);
+		graphics::drawRect(time_bar_x, CANVAS_HEIGHT - 40, time_bar_width, 20.f, m_brush_time_green);
 	}
 
 	// Draw Score
@@ -299,12 +294,44 @@ void Level::init()
 {
 	readFile("level.txt");
 
-	m_block_brush.outline_opacity = 0.0f;
+	graphics::Brush roadBrush;
+	roadBrush.texture = m_state->getFullAssetPath("road.png");
+	roadBrush.outline_opacity = 0.0f;
+
+	graphics::Brush waterBrush;
+	waterBrush.texture = m_state->getFullAssetPath("water.png");
+	waterBrush.outline_opacity = 0.0f;
+
+	graphics::Brush grassBrush;
+	grassBrush.texture = m_state->getFullAssetPath("grass.png");
+	grassBrush.outline_opacity = 0.0f;
+
+	graphics::Brush homeBrush;
+	homeBrush.texture = m_state->getFullAssetPath("home.png");
+	homeBrush.outline_opacity = 0.0f;
+
+	graphics::Brush homeGoalBrush;
+	homeGoalBrush.texture = m_state->getFullAssetPath("home_goal.png");
+	homeGoalBrush.outline_opacity = 0.0f;
+
+
+	m_blockBrushes[BlockType::Road] = roadBrush;
+	m_blockBrushes[BlockType::Water] = waterBrush;
+	m_blockBrushes[BlockType::Grass] = grassBrush;
+	m_blockBrushes[BlockType::Home] = homeBrush;
+	m_blockBrushes[BlockType::HomeGoal] = homeGoalBrush;
+
+
+	m_brush_time_green.outline_opacity = 0.0f;
+	m_brush_time_orange.outline_opacity = 0.0f;
+	m_brush_time_red.outline_opacity = 0.0f;
+
+	SETCOLOR(m_brush_time_red.fill_color, 255.0f, 0.0f, 0.0f);
+	SETCOLOR(m_brush_time_orange.fill_color, 255.0f, 165.0f, 0.0f);
+	SETCOLOR(m_brush_time_green.fill_color, 0.0f, 128.0f, 0.0f);
+
 	m_block_brush_debug.fill_opacity = 0.1f;
 	SETCOLOR(m_block_brush_debug.outline_color, 0.f, 0.f, 255.f);
-
-	m_brush_time.outline_opacity = 0.0f;
-	SETCOLOR(m_brush_time.fill_color, 0.f, 128.f, 0.f);
 
 	m_brush_text.outline_opacity = 0.0f;
 	SETCOLOR(m_brush_text.fill_color, 255.f, 255.f, 255.f);
@@ -328,21 +355,9 @@ void Level::init()
 		{115, -0.1f, 4.0f,4.0f, 160.0f, 38.4f, "Log-long.png"}
 	} };
 
-	// Prepopulate the dynamic game objects list with vehicles and logs
-	for (const auto& lane : lanes) {
-		// Set initial x_position for each lane
-		float x_position = (lane.speed > 0) ? -lane.obj_width + 300 : CANVAS_WIDTH - 300 + lane.obj_width;
-
-		GameObject* game_object;
-		if (lane.obj_sprite.find("L", 0) == 0) {
-			Log* log = new Log("log", x_position, lane.y_position, lane.speed, lane.obj_width, lane.obj_height, lane.obj_sprite);
-			game_object = log;
-		} else {
-			Vehicle* new_vehicle = new Vehicle("vehicle", x_position, lane.y_position, lane.speed, lane.obj_width, lane.obj_height, lane.obj_sprite);
-			game_object = new_vehicle;
-		}
-
-		m_dynamic_objects.push_back(game_object);
+	// Set spawn timers to 0 to spawn moviing objects immediately
+	for (auto& lane : lanes) {
+		lane.spawn_timer = 0.f;
 	}
 }
 

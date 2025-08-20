@@ -2,10 +2,10 @@
 #include "config.hpp"
 #include <string>
 
-
+enum game_status { STATUS_START, STATUS_PLAYING, STATUS_GAME_OVER };
 class GameState {
-public:
-	enum status_t { STATUS_START, STATUS_PLAYING, STATUS_GAME_OVER };
+
+	
 private:
 	static GameState* m_instance;
 	class Player* m_player = nullptr;
@@ -13,7 +13,7 @@ private:
 	class Button *m_start_button, *m_quit_button, *m_retry_button, *m_exit_button;
 	bool m_debug_mode;
 	const std::string m_asset_path = ASSET_PATH;
-	status_t m_status = STATUS_START;
+	game_status m_status = STATUS_START;
 	unsigned int m_score = 0;
 
 	void updateStartScreen(float dt);
@@ -29,7 +29,7 @@ public:
 	class Level* getLevel() const { return m_current_level; }
 	void setDebugMode(bool mode) { m_debug_mode = mode; }
 	bool getDebugMode() const { return m_debug_mode; }
-	void setStatus(status_t status);
+	void setStatus(game_status status);
 	unsigned int getScore() { return m_score; };
 	void updateScore(unsigned int points);
 	std::string getFullAssetPath(const std::string& asset) const;

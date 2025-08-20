@@ -20,6 +20,21 @@ GameState::~GameState()
 		delete m_current_level;
 	}
 
+	if (m_start_button) {
+		delete m_start_button;
+	}
+
+	if (m_quit_button) {
+		delete m_quit_button;
+	}
+
+	if (m_retry_button) {
+		delete m_retry_button;
+	}
+
+	if (m_exit_button) {
+		delete m_exit_button;
+	}
 }
 
 GameState* GameState::getInstance()
@@ -90,7 +105,7 @@ void GameState::drawGameOverScreen()
 
 }
 
-void GameState::setStatus(status_t status)
+void GameState::setStatus(game_status status)
 {
 	m_status = status;
 }
