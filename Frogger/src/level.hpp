@@ -59,6 +59,7 @@ private:
 	void checkCollisions();
 
 public:
+	void parseJson();
 	void resetLevel();
 	void update(float dt) override;
 	void draw() override;

@@ -1,0 +1,76 @@
+{
+  "lanes": [
+    {
+      "y_position": 735,
+      "speed": 0.07,
+      "spawn_timer": 0.0,
+      "default_spawn_timer": 3.0,
+      "obj_width": 73.5,
+      "obj_height": 40.5,
+      "obj_sprite": "car1.png"
+    },
+    {
+      "y_position": 660,
+      "speed": -0.1,
+      "spawn_timer": 0.0,
+      "default_spawn_timer": 4.0,
+      "obj_width": 78.0,
+      "obj_height": 42.0,
+      "obj_sprite": "car2.png"
+    },
+    {
+      "y_position": 585,
+      "speed": 0.1,
+      "spawn_timer": 0.0,
+      "default_spawn_timer": 2.5,
+      "obj_width": 75.0,
+      "obj_height": 45.0,
+      "obj_sprite": "car3.png"
+    },
+    {
+      "y_position": 500,
+      "speed": -0.1,
+      "spawn_timer": 0.0,
+      "default_spawn_timer": 3.5,
+      "obj_width": 72.0,
+      "obj_height": 43.5,
+      "obj_sprite": "car4.png"
+    },
+    {
+      "y_position": 418,
+      "speed": 0.1,
+      "spawn_timer": 0.0,
+      "default_spawn_timer": 5.0,
+      "obj_width": 109.5,
+      "obj_height": 52.5,
+      "obj_sprite": "truck.png"
+    },
+    {
+      "y_position": 265,
+      "speed": -0.1,
+      "spawn_timer": 0.0,
+      "default_spawn_timer": 2.5,
+      "obj_width": 80.0,
+      "obj_height": 38.4,
+      "obj_sprite": "Log-small.png"
+    },
+    {
+      "y_position": 190,
+      "speed": 0.1,
+      "spawn_timer": 0.0,
+      "default_spawn_timer": 3.5,
+      "obj_width": 106.6,
+      "obj_height": 38.4,
+      "obj_sprite": "Log-medium.png"
+    },
+    {
+      "y_position": 115,
+      "speed": -0.1,
+      "spawn_timer": 0.0,
+      "default_spawn_timer": 4.0,
+      "obj_width": 160.0,
+      "obj_height": 38.4,
+      "obj_sprite": "Log-long.png"
+    }
+  ]
+}

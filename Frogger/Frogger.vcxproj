@@ -167,6 +167,9 @@
     <ClInclude Include="src\util.hpp" />
     <ClInclude Include="src\vehicle.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bin\assets\lanes.json" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

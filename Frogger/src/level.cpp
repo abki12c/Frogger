@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include "log.hpp"
+#include "rapidjson/document.h"
 
 void Level::spawnMovingObjects()
 {
@@ -189,9 +190,7 @@ void Level::checkCollisions()
 
 void Level::resetLevel()
 {
-	for (int i = 0; i < 4; i++) {
-		m_visited_goals[i] = false;
-	}
+	m_visited_goals.fill(false);
 
 	m_remaining_time = 60.0f;
 	m_levelCompleteSoundTimer = 0.0f;
@@ -199,6 +198,35 @@ void Level::resetLevel()
 	m_playedTimeRunsOutSound = false;
 	m_levelCompleteSoundPlayed = false;
 }
+
+void Level::parseJson() {
+	std::ifstream file(m_state->getFullAssetPath("lanes.json"));
+
+	// Read the entire file into a string
+	std::string json((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+	rapidjson::Document doc;
+	doc.Parse(json.c_str());
+
+	if (doc.HasParseError()) {
+		std::cerr << "Error parsing JSON: "
+			<< doc.GetParseError() << std::endl;
+		return;
+	}
+
+	for (int i = 0; i < 8; i++) {
+		Lane lane;
+
+		lanes[i].y_position = (int16_t)doc["lanes"][i]["y_position"].GetInt();
+		lanes[i].speed = doc["lanes"][i]["speed"].GetFloat();
+		lanes[i].spawn_timer = doc["lanes"][i]["spawn_timer"].GetFloat();
+		lanes[i].default_spawn_timer = doc["lanes"][i]["default_spawn_timer"].GetFloat();
+		lanes[i].obj_width = doc["lanes"][i]["obj_width"].GetFloat();
+		lanes[i].obj_height = doc["lanes"][i]["obj_height"].GetFloat();
+		lanes[i].obj_sprite = doc["lanes"][i]["obj_sprite"].GetString();
+	}
+}
+
 
 void Level::update(float dt)
 {
@@ -296,6 +324,7 @@ void Level::draw()
 void Level::init()
 {
 	readFile("level.txt");
+	parseJson();
 
 	graphics::Brush roadBrush;
 	roadBrush.texture = m_state->getFullAssetPath("road.png");
@@ -346,22 +375,6 @@ void Level::init()
 	m_brush_lives.outline_opacity = 0.0f;
 
 	m_visited_goals.fill(false);
-
-	lanes = { {
-		{ 735, 0.07f, 3.0f, 3.0f, 73.5f, 40.5f, "car1.png" },
-		{660, -0.1f, 4.0f, 4.0f, 78.0f, 42.0f, "car2.png"},
-		{585, 0.1f, 2.5f,2.5f, 75.0f, 45.0f, "car3.png"},
-		{500, -0.1f, 3.5f,3.5f, 72.0f, 43.5f, "car4.png"},
-		{418, 0.1f, 5.0f,5.0f, 109.5f, 52.5f, "truck.png"},
-		{265, -0.1f, 2.5f,2.5f, 80.0f, 38.4f, "Log-small.png"},
-		{190, 0.1f, 3.5f,3.5f, 106.6f, 38.4f, "Log-medium.png"},
-		{115, -0.1f, 4.0f,4.0f, 160.0f, 38.4f, "Log-long.png"}
-	} };
-
-	// Set spawn timers to 0 to spawn moviing objects immediately
-	for (auto& lane : lanes) {
-		lane.spawn_timer = 0.f;
-	}
 }
 
 Level::Level(const std::string & name)
