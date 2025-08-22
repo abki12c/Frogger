@@ -199,8 +199,8 @@ void Level::resetLevel()
 	m_levelCompleteSoundPlayed = false;
 }
 
-void Level::parseJson(const std::string& file_name) {
-	std::ifstream file(m_state->getFullAssetPath(file_name));
+void Level::parseJson(const std::string& filename) {
+	std::ifstream file(m_state->getFullAssetPath(filename));
 
 	// Read the entire file into a string
 	std::string json((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
