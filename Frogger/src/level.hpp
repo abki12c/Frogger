@@ -59,7 +59,7 @@ private:
 	void checkCollisions();
 
 public:
-	void parseJson();
+	void parseJson(const std::string&);
 	void resetLevel();
 	void update(float dt) override;
 	void draw() override;

@@ -199,8 +199,8 @@ void Level::resetLevel()
 	m_levelCompleteSoundPlayed = false;
 }
 
-void Level::parseJson() {
-	std::ifstream file(m_state->getFullAssetPath("lanes.json"));
+void Level::parseJson(const std::string& file_name) {
+	std::ifstream file(m_state->getFullAssetPath(file_name));
 
 	// Read the entire file into a string
 	std::string json((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
@@ -322,7 +322,7 @@ void Level::draw()
 void Level::init()
 {
 	readFile("level.txt");
-	parseJson();
+	parseJson("lanes.json");
 
 	graphics::Brush roadBrush;
 	roadBrush.texture = m_state->getFullAssetPath("road.png");
