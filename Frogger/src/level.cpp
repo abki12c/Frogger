@@ -46,7 +46,6 @@ void Level::removeInactiveObjects()
 		std::remove_if(m_dynamic_objects.begin(), m_dynamic_objects.end(), [](MovingObject* game_object) {
 			if (game_object && !game_object->isActive()) {
 				delete game_object;
-				game_object = nullptr;
 				return true;
 			}
 			return false;
@@ -126,7 +125,7 @@ void Level::checkCollisions()
 	for (auto& gameObject : m_dynamic_objects) {
 		if (gameObject && gameObject->isActive()) {
 			if (gameObject->getType() == ObjectType::vehicle) {
-				Vehicle* vehicle = dynamic_cast<Vehicle*>(gameObject);
+				Vehicle* vehicle = static_cast<Vehicle*>(gameObject);
 
 				// Check for collision with vehicle
 				if (m_state->getPlayer()->intersect(*vehicle)) {
@@ -136,7 +135,7 @@ void Level::checkCollisions()
 					break;
 				}
 			} else {
-				Log* log = dynamic_cast<Log*>(gameObject);
+				Log* log = static_cast<Log*>(gameObject);
 
 				// Check for collision with log
 				if (m_state->getPlayer()->intersect(*log)) {
@@ -144,7 +143,7 @@ void Level::checkCollisions()
 					m_state->getPlayer()->setOnLogSpeed(log->getSpeed());
 					break;
 				}
-			}	
+			}
 		}
 	}
 
@@ -203,8 +202,6 @@ void Level::resetLevel()
 
 void Level::update(float dt)
 {
-	checkCollisions();
-
 	// update player
 	if (m_state->getPlayer()->isActive())
 		m_state->getPlayer()->update(dt);
@@ -219,12 +216,18 @@ void Level::update(float dt)
 		}
 	}
 
+	checkCollisions();
+
 	// Decrease remaining time
 	m_remaining_time -= dt / 1000.0f;
 	if (m_remaining_time < 0) {
 		m_remaining_time = m_total_time; // reset timer
 		m_playedTimeRunsOutSound = false;
 		m_state->getPlayer()->reduceLives();
+		m_state->getPlayer()->resetPlayer();
+		if (m_state->getPlayer()->getLives() > 1) {
+			graphics::playSound(m_state->getFullAssetPath("sound/squash.wav"), 0.5f, false);
+		}
 	}
 
 	if (m_remaining_time < m_total_time * 0.3f && !m_playedTimeRunsOutSound) {
