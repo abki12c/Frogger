@@ -215,8 +215,6 @@ void Level::parseJson() {
 	}
 
 	for (int i = 0; i < 8; i++) {
-		Lane lane;
-
 		lanes[i].y_position = (int16_t)doc["lanes"][i]["y_position"].GetInt();
 		lanes[i].speed = doc["lanes"][i]["speed"].GetFloat();
 		lanes[i].spawn_timer = doc["lanes"][i]["spawn_timer"].GetFloat();
