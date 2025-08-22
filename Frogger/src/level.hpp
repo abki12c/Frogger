@@ -50,7 +50,7 @@ private:
 	std::unordered_map<BlockType, graphics::Brush> m_blockBrushes;
 	graphics::Brush m_block_brush_debug;
 
-	std::array<Lane, 8> lanes;
+	std::array<Lane, 8> m_lanes;
 
 	void spawnMovingObjects();
 	void removeInactiveObjects();

@@ -12,7 +12,7 @@
 void Level::spawnMovingObjects()
 {
 	// Update game objects in each lane
-	for (auto& lane : lanes) {
+	for (auto& lane : m_lanes) {
 		// Decrement spawn timer
 		lane.spawn_timer -= graphics::getDeltaTime() / 1000.0f;
 
@@ -215,13 +215,13 @@ void Level::parseJson() {
 	}
 
 	for (int i = 0; i < 8; i++) {
-		lanes[i].y_position = (int16_t)doc["lanes"][i]["y_position"].GetInt();
-		lanes[i].speed = doc["lanes"][i]["speed"].GetFloat();
-		lanes[i].spawn_timer = doc["lanes"][i]["spawn_timer"].GetFloat();
-		lanes[i].default_spawn_timer = doc["lanes"][i]["default_spawn_timer"].GetFloat();
-		lanes[i].obj_width = doc["lanes"][i]["obj_width"].GetFloat();
-		lanes[i].obj_height = doc["lanes"][i]["obj_height"].GetFloat();
-		lanes[i].obj_sprite = doc["lanes"][i]["obj_sprite"].GetString();
+		m_lanes[i].y_position = (int16_t)doc["lanes"][i]["y_position"].GetInt();
+		m_lanes[i].speed = doc["lanes"][i]["speed"].GetFloat();
+		m_lanes[i].spawn_timer = doc["lanes"][i]["spawn_timer"].GetFloat();
+		m_lanes[i].default_spawn_timer = doc["lanes"][i]["default_spawn_timer"].GetFloat();
+		m_lanes[i].obj_width = doc["lanes"][i]["obj_width"].GetFloat();
+		m_lanes[i].obj_height = doc["lanes"][i]["obj_height"].GetFloat();
+		m_lanes[i].obj_sprite = doc["lanes"][i]["obj_sprite"].GetString();
 	}
 }
 
