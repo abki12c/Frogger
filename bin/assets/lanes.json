@@ -1,6 +1,7 @@
 {
-  "lanes": [
+  "lanes-lvl1": [
     {
+      "type": "vehicle",
       "y_position": 735,
       "speed": 0.07,
       "spawn_timer": 0.0,
@@ -10,6 +11,7 @@
       "obj_sprite": "car1.png"
     },
     {
+      "type": "vehicle",
       "y_position": 660,
       "speed": -0.1,
       "spawn_timer": 0.0,
@@ -19,6 +21,7 @@
       "obj_sprite": "car2.png"
     },
     {
+      "type": "vehicle",
       "y_position": 585,
       "speed": 0.1,
       "spawn_timer": 0.0,
@@ -28,6 +31,7 @@
       "obj_sprite": "car3.png"
     },
     {
+      "type": "vehicle",
       "y_position": 500,
       "speed": -0.1,
       "spawn_timer": 0.0,
@@ -37,6 +41,7 @@
       "obj_sprite": "car4.png"
     },
     {
+      "type": "vehicle",
       "y_position": 418,
       "speed": 0.1,
       "spawn_timer": 0.0,
@@ -46,6 +51,7 @@
       "obj_sprite": "truck.png"
     },
     {
+      "type": "log",
       "y_position": 265,
       "speed": -0.1,
       "spawn_timer": 0.0,
@@ -55,6 +61,7 @@
       "obj_sprite": "Log-small.png"
     },
     {
+      "type": "log",
       "y_position": 190,
       "speed": 0.1,
       "spawn_timer": 0.0,
@@ -64,6 +71,7 @@
       "obj_sprite": "Log-medium.png"
     },
     {
+      "type": "log",
       "y_position": 115,
       "speed": -0.1,
       "spawn_timer": 0.0,

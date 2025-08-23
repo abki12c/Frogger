@@ -16,6 +16,7 @@ struct Lane {
 	float obj_width;
 	float obj_height;
 	std::string obj_sprite;
+	std::string type;
 };
 
 enum class BlockType { Water, Grass, Home, HomeGoal, Road };

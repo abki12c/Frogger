@@ -3,6 +3,7 @@
 #include "level.hpp"
 #include "button.hpp"
 #include <iostream>
+#include "util.hpp"
 
 GameState* GameState::m_instance = nullptr;
 
@@ -35,6 +36,14 @@ GameState::~GameState()
 	if (m_exit_button) {
 		delete m_exit_button;
 	}
+
+	if (m_help_button) {
+		delete m_help_button;
+	}
+
+	if (m_back_button) {
+		delete m_back_button;
+	}
 }
 
 GameState* GameState::getInstance()
@@ -47,7 +56,10 @@ GameState* GameState::getInstance()
 
 void GameState::releaseInstance()
 {
-	if (m_instance) delete m_instance;
+	if (m_instance) {
+		delete m_instance;
+		m_instance = nullptr;
+	}
 }
 
 void GameState::updateStartScreen(float dt)
@@ -58,6 +70,7 @@ void GameState::updateStartScreen(float dt)
 
 	m_start_button->update(dt);
 	m_quit_button->update(dt);
+	m_help_button->update(dt);
 }
 
 void GameState::updateLevelScreen(float dt)
@@ -74,16 +87,25 @@ void GameState::updateGameOverScreen(float dt)
 	m_exit_button->update(dt);
 }
 
+void GameState::updateHelpScreen(float dt)
+{
+	if (graphics::getKeyState(graphics::SCANCODE_F)) {
+		graphics::setFullScreen(true);
+	}
+
+	m_back_button->update(dt);
+}
+
 void GameState::drawStartScreen()
 {
 	graphics::Brush br;
-	graphics::Brush br2;
-	br2.outline_opacity = 0;
-	br2.texture = getFullAssetPath("wallpaper.png");
-	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br2);
+	br.outline_opacity = 0;
+	br.texture = getFullAssetPath("wallpaper.png");
+	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
 
 	m_start_button->draw();
 	m_quit_button->draw();
+	m_help_button->draw();
 }
 
 void GameState::drawLevelScreen()
@@ -102,6 +124,33 @@ void GameState::drawGameOverScreen()
 
 	m_retry_button->draw();
 	m_exit_button->draw();
+
+}
+
+void GameState::drawHelpScreen()
+{	
+	graphics::Brush br;
+	br.outline_opacity = 0;
+	SETCOLOR(br.fill_color, 0.047f, 0.671f, 0.588f);
+	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+
+
+	graphics::Brush br2;
+	br2.texture = getFullAssetPath("wasd.png");
+	br2.outline_opacity = 0;
+	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 100, 288, 187, br2);
+
+	graphics::Brush br3;
+	graphics::drawText(CANVAS_WIDTH / 2 - 230, CANVAS_HEIGHT / 2  - 300, 40, "Use the WASD keys to move", br3);
+
+	graphics::Brush br4;
+	graphics::drawText(CANVAS_WIDTH / 2 - 400, CANVAS_HEIGHT  - 360, 40, "Press F to make set the screen to Fullscreen",br4);
+
+	graphics::Brush br5;
+	graphics::drawText(CANVAS_WIDTH / 2 - 410, CANVAS_HEIGHT - 250, 30, "The Goal  is to reach the empty home bases as many times as possible", br5);
+
+	m_back_button->draw();
+
 
 }
 
@@ -131,6 +180,8 @@ void GameState::update(float dt)
 		updateStartScreen(dt);
 	} else if (m_status == STATUS_PLAYING) {
 		updateLevelScreen(dt);
+	} else if (m_status == STATUS_HELP) {
+		updateHelpScreen(dt);
 	} else {
 		updateGameOverScreen(dt);
 	}
@@ -143,8 +194,10 @@ void GameState::draw()
 		drawStartScreen();
 	} else if (m_status == STATUS_PLAYING) {
 		drawLevelScreen();
-	} else {
+	} else if(m_status == STATUS_GAME_OVER) {
 		drawGameOverScreen();
+	} else {
+		drawHelpScreen();
 	}
 	
 }
@@ -154,10 +207,12 @@ void GameState::init()
 	m_current_level = new Level("Level-1");
 	m_player = new Player("Frog");
 
-	m_start_button = new Button(/*width*/ 200, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2, /*start_pos_y*/ CANVAS_HEIGHT - 230, /*draw_pos_x*/ CANVAS_WIDTH / 2, /*draw_pos_y*/ CANVAS_HEIGHT - 170, /*text*/ "START");
-	m_quit_button = new Button(/*width*/ 130, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2, /*start_pos_y*/ CANVAS_HEIGHT - 150, /*draw_pos_x*/ CANVAS_WIDTH / 2, /*draw_pos_y*/  CANVAS_HEIGHT - 90, /*text*/ "QUIT");
+	m_start_button = new Button(/*width*/ 220, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2, /*start_pos_y*/ CANVAS_HEIGHT - 270, /*draw_pos_x*/ CANVAS_WIDTH / 2, /*draw_pos_y*/ CANVAS_HEIGHT - 210, /*text*/ "START");
+	m_help_button = new Button(/*width*/ 160, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2 + 5, /*start_pos_y*/ CANVAS_HEIGHT - 190, /*draw_pos_x*/ CANVAS_WIDTH / 2 + 5, /*draw_pos_y*/  CANVAS_HEIGHT - 130, /*text*/ "HELP");
+	m_quit_button = new Button(/*width*/ 140, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2, /*start_pos_y*/ CANVAS_HEIGHT - 110, /*draw_pos_x*/ CANVAS_WIDTH / 2, /*draw_pos_y*/  CANVAS_HEIGHT - 50, /*text*/ "QUIT");
 	m_retry_button = new Button(/*width*/ 250, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2 - 500, /*start_pos_y*/ CANVAS_HEIGHT / 2 + 340, /*draw_pos_x*/ CANVAS_WIDTH / 2 - 500, /*draw_pos_y*/ CANVAS_HEIGHT / 2 + 400, /*text*/ "RETRY");
 	m_exit_button = new Button(/*width*/ 150, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2 + 300, /*start_pos_y*/ CANVAS_HEIGHT / 2 + 340, /*draw_pos_x*/ CANVAS_WIDTH / 2 + 300, /*draw_pos_y*/  CANVAS_HEIGHT / 2 + 400, /*text*/ "EXIT");
+	m_back_button = new Button(/*width*/ 180, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2 + 300, /*start_pos_y*/ CANVAS_HEIGHT / 2 + 340, /*draw_pos_x*/ CANVAS_WIDTH / 2 + 300, /*draw_pos_y*/  CANVAS_HEIGHT / 2 + 400, /*text*/ "BACK");
 
 	// Set click callbacks:
 	m_start_button->setOnClick([this]() {
@@ -181,6 +236,14 @@ void GameState::init()
 		graphics::destroyWindow();
 	});
 
+	m_help_button->setOnClick([this]() {
+		m_status = STATUS_HELP;
+	});
+
+	m_back_button->setOnClick([this]() {
+		m_status = STATUS_START;
+	});
+
 	// Play sound on hover enter
 	auto playHoverSound = [this]() {
 		graphics::playSound(getFullAssetPath("sound/menu-change.mp3"), 0.2f, false);
@@ -191,6 +254,8 @@ void GameState::init()
 	m_quit_button->setOnHoverEnter(playHoverSound);
 	m_retry_button->setOnHoverEnter(playHoverSound);
 	m_exit_button->setOnHoverEnter(playHoverSound);
+	m_help_button->setOnHoverEnter(playHoverSound);
+	m_back_button->setOnHoverEnter(playHoverSound);
 
 
 	graphics::preloadBitmaps(ASSET_PATH);

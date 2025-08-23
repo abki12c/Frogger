@@ -22,7 +22,7 @@ void Level::spawnMovingObjects()
 			float x_position = (lane.speed > 0) ? 0.f : CANVAS_WIDTH;
 
 			MovingObject* game_object;
-			if(lane.obj_sprite.find("L",0) == 0) {
+			if(lane.type == "log") {
 				Log* log = new Log("log", x_position, lane.y_position, lane.speed, lane.obj_width, lane.obj_height, lane.obj_sprite);
 				game_object = log;
 			} else {
@@ -199,7 +199,8 @@ void Level::resetLevel()
 	m_levelCompleteSoundPlayed = false;
 }
 
-void Level::parseJson(const std::string& filename) {
+void Level::parseJson(const std::string& filename)
+{
 	std::ifstream file(m_state->getFullAssetPath(filename));
 
 	// Read the entire file into a string
@@ -209,19 +210,19 @@ void Level::parseJson(const std::string& filename) {
 	doc.Parse(json.c_str());
 
 	if (doc.HasParseError()) {
-		std::cerr << "Error parsing JSON: "
-			<< doc.GetParseError() << std::endl;
+		std::cerr << "Error parsing JSON: " << doc.GetParseError() << std::endl;
 		return;
 	}
 
 	for (int i = 0; i < 8; i++) {
-		m_lanes[i].y_position = (int16_t)doc["lanes"][i]["y_position"].GetInt();
-		m_lanes[i].speed = doc["lanes"][i]["speed"].GetFloat();
-		m_lanes[i].spawn_timer = doc["lanes"][i]["spawn_timer"].GetFloat();
-		m_lanes[i].default_spawn_timer = doc["lanes"][i]["default_spawn_timer"].GetFloat();
-		m_lanes[i].obj_width = doc["lanes"][i]["obj_width"].GetFloat();
-		m_lanes[i].obj_height = doc["lanes"][i]["obj_height"].GetFloat();
-		m_lanes[i].obj_sprite = doc["lanes"][i]["obj_sprite"].GetString();
+		m_lanes[i].type = doc["lanes-lvl1"][i]["type"].GetString();
+		m_lanes[i].y_position = (int16_t)doc["lanes-lvl1"][i]["y_position"].GetInt();
+		m_lanes[i].speed = doc["lanes-lvl1"][i]["speed"].GetFloat();
+		m_lanes[i].spawn_timer = doc["lanes-lvl1"][i]["spawn_timer"].GetFloat();
+		m_lanes[i].default_spawn_timer = doc["lanes-lvl1"][i]["default_spawn_timer"].GetFloat();
+		m_lanes[i].obj_width = doc["lanes-lvl1"][i]["obj_width"].GetFloat();
+		m_lanes[i].obj_height = doc["lanes-lvl1"][i]["obj_height"].GetFloat();
+		m_lanes[i].obj_sprite = doc["lanes-lvl1"][i]["obj_sprite"].GetString();
 	}
 }
 
@@ -383,6 +384,8 @@ Level::Level(const std::string & name)
 
 Level::~Level()
 {
-	for (auto p_go : m_dynamic_objects)
-		delete p_go;
+	for (auto& dymamic_object : m_dynamic_objects) {
+		delete dymamic_object;
+	}
+	m_dynamic_objects.clear();
 }
