@@ -1,5 +1,4 @@
 #include "gamestate.hpp"
-#include "sgg/graphics.h"
 #include "level.hpp"
 #include "button.hpp"
 #include <iostream>
@@ -98,10 +97,7 @@ void GameState::updateHelpScreen(float dt)
 
 void GameState::drawStartScreen()
 {
-	graphics::Brush br;
-	br.outline_opacity = 0;
-	br.texture = getFullAssetPath("wallpaper.png");
-	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, m_wallpaper_brush);
 
 	m_start_button->draw();
 	m_quit_button->draw();
@@ -118,9 +114,8 @@ void GameState::drawLevelScreen()
 
 void GameState::drawGameOverScreen()
 {
-	graphics::Brush br;
-	graphics::drawText(CANVAS_WIDTH/2 -200, CANVAS_HEIGHT/2,80,"GAME OVER",br);
-	graphics::drawText(CANVAS_WIDTH / 2 - 80, CANVAS_HEIGHT / 2 + 150, 40, "Score: " + std::to_string(m_score), br);
+	graphics::drawText(CANVAS_WIDTH/2 -200, CANVAS_HEIGHT/2,80,"GAME OVER",m_txt_brush);
+	graphics::drawText(CANVAS_WIDTH / 2 - 80, CANVAS_HEIGHT / 2 + 150, 40, "Score: " + std::to_string(m_score), m_txt_brush);
 
 	m_retry_button->draw();
 	m_exit_button->draw();
@@ -129,29 +124,17 @@ void GameState::drawGameOverScreen()
 
 void GameState::drawHelpScreen()
 {	
-	graphics::Brush br;
-	br.outline_opacity = 0;
-	SETCOLOR(br.fill_color, 0.047f, 0.671f, 0.588f);
-	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, m_help_screen_brush);
 
+	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 100, 288, 187, m_controls_img_brush);
 
-	graphics::Brush br2;
-	br2.texture = getFullAssetPath("wasd.png");
-	br2.outline_opacity = 0;
-	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 100, 288, 187, br2);
+	graphics::drawText(CANVAS_WIDTH / 2 - 230, CANVAS_HEIGHT / 2  - 300, 40, "Use the WASD keys to move", m_txt_brush);
 
-	graphics::Brush br3;
-	graphics::drawText(CANVAS_WIDTH / 2 - 230, CANVAS_HEIGHT / 2  - 300, 40, "Use the WASD keys to move", br3);
+	graphics::drawText(CANVAS_WIDTH / 2 - 400, CANVAS_HEIGHT  - 360, 40, "Press F to toggle Fullscreen", m_txt_brush);
 
-	graphics::Brush br4;
-	graphics::drawText(CANVAS_WIDTH / 2 - 400, CANVAS_HEIGHT  - 360, 40, "Press F to make set the screen to Fullscreen",br4);
-
-	graphics::Brush br5;
-	graphics::drawText(CANVAS_WIDTH / 2 - 410, CANVAS_HEIGHT - 250, 30, "The Goal  is to reach the empty home bases as many times as possible", br5);
+	graphics::drawText(CANVAS_WIDTH / 2 - 410, CANVAS_HEIGHT - 250, 30, "The Goal  is to reach the empty home bases as many times as possible", m_txt_brush);
 
 	m_back_button->draw();
-
-
 }
 
 void GameState::setStatus(game_status status)
@@ -185,6 +168,7 @@ void GameState::update(float dt)
 	} else {
 		updateGameOverScreen(dt);
 	}
+
 }
 
 void GameState::draw()
@@ -206,6 +190,15 @@ void GameState::init()
 {
 	m_current_level = new Level("Level-1");
 	m_player = new Player("Frog");
+
+	m_wallpaper_brush.outline_opacity = 0;
+	m_wallpaper_brush.texture = getFullAssetPath("wallpaper.png");
+
+	m_help_screen_brush.outline_opacity = 0;
+	SETCOLOR(m_help_screen_brush.fill_color, 0.047f, 0.671f, 0.588f);
+
+	m_controls_img_brush.texture = getFullAssetPath("wasd.png");
+	m_controls_img_brush.outline_opacity = 0;
 
 	m_start_button = new Button(/*width*/ 220, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2, /*start_pos_y*/ CANVAS_HEIGHT - 270, /*draw_pos_x*/ CANVAS_WIDTH / 2, /*draw_pos_y*/ CANVAS_HEIGHT - 210, /*text*/ "START");
 	m_help_button = new Button(/*width*/ 160, /*height*/ 60, /*start_pos_x*/ CANVAS_WIDTH / 2 + 5, /*start_pos_y*/ CANVAS_HEIGHT - 190, /*draw_pos_x*/ CANVAS_WIDTH / 2 + 5, /*draw_pos_y*/  CANVAS_HEIGHT - 130, /*text*/ "HELP");

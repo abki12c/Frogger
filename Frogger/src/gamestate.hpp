@@ -1,6 +1,7 @@
 #pragma once
 #include "config.hpp"
 #include <string>
+#include <sgg/graphics.h>
 
 enum game_status { STATUS_START, STATUS_PLAYING, STATUS_GAME_OVER, STATUS_HELP};
 
@@ -14,6 +15,8 @@ private:
 	const std::string m_asset_path = ASSET_PATH;
 	game_status m_status = STATUS_START;
 	unsigned int m_score = 0;
+
+	graphics::Brush m_wallpaper_brush, m_help_screen_brush, m_controls_img_brush, m_txt_brush;
 
 	void updateStartScreen(float dt);
 	void updateLevelScreen(float dt);
