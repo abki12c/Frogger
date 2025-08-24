@@ -114,7 +114,7 @@ void GameState::drawLevelScreen()
 
 void GameState::drawGameOverScreen()
 {
-	graphics::drawText(CANVAS_WIDTH/2 -200, CANVAS_HEIGHT/2,80,"GAME OVER",m_txt_brush);
+	graphics::drawText(CANVAS_WIDTH/2 - 200, CANVAS_HEIGHT/2, 80,"GAME OVER", m_txt_brush);
 	graphics::drawText(CANVAS_WIDTH / 2 - 80, CANVAS_HEIGHT / 2 + 150, 40, "Score: " + std::to_string(m_score), m_txt_brush);
 
 	m_retry_button->draw();

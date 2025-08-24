@@ -155,7 +155,7 @@ void Level::checkCollisions()
 				m_visited_goals[(i - 2) / 3] = true;
 				if (m_visited_goals[0] && m_visited_goals[1] && m_visited_goals[2] && m_visited_goals[3]) {
 					// collected all frogs
-					m_state->getInstance()->updateScore(50);
+					m_state->updateScore(50);
 					m_visited_goals.fill(false);
 
 					if (!m_levelCompleteSoundPlayed) {
@@ -166,7 +166,7 @@ void Level::checkCollisions()
 					}
 					
 				}
-				m_state->getInstance()->updateScore(20);
+				m_state->updateScore(20);
 
 				
 				m_state->getPlayer()->resetPlayer();
@@ -265,7 +265,7 @@ void Level::update(float dt)
 	// game over
 	if (m_state->getPlayer()->getLives() == 0) {
 		graphics::stopMusic();
-		m_state->getInstance()->setStatus(STATUS_GAME_OVER);
+		m_state->setStatus(STATUS_GAME_OVER);
 		graphics::playSound(m_state->getFullAssetPath("sound/game-over.wav"),0.5f,false);
 	}
 
@@ -317,7 +317,7 @@ void Level::draw()
 
 	// Draw Score
 	graphics::drawText(CANVAS_WIDTH/2, CANVAS_HEIGHT - 60, 30.f, "Score", m_brush_text);
-	graphics::drawText(CANVAS_WIDTH/2, CANVAS_HEIGHT - 25, 30.f, std::to_string(m_state->getInstance()->getScore()), m_brush_score);
+	graphics::drawText(CANVAS_WIDTH/2, CANVAS_HEIGHT - 25, 30.f, std::to_string(m_state->getScore()), m_brush_score);
 }
 
 void Level::init()
@@ -384,8 +384,8 @@ Level::Level(const std::string & name)
 
 Level::~Level()
 {
-	for (auto& dymamic_object : m_dynamic_objects) {
-		delete dymamic_object;
+	for (auto& dynamic_object : m_dynamic_objects) {
+		delete dynamic_object;
 	}
 	m_dynamic_objects.clear();
 }
